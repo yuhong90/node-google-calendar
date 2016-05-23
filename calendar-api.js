@@ -8,13 +8,13 @@ var USERID = require('../settings').userId;
 var SERVICE_ACCT_ID = require('../settings').serviceAcctId;
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var jwt = {
-            // use the email address of the service account, as seen in the API console
-            email: SERVICE_ACCT_ID,
-            // use the PEM file we generated from the downloaded key
-            keyFile: KEYFILE,
-            // specify the scopes you wish to access - each application has different scopes
-            scopes: SCOPES
-          };
+    // use the email address of the service account, as seen in the API console
+    email: SERVICE_ACCT_ID,
+    // use the PEM file we generated from the downloaded key
+    keyFile: KEYFILE,
+    // specify the scopes you wish to access - each application has different scopes
+    scopes: SCOPES
+};
 const TIMEZONE = "UTC+08:00";
 
 /**
@@ -23,28 +23,33 @@ const TIMEZONE = "UTC+08:00";
  * @param {string} startDateTime (optional) - start datetime of event in 2016-04-29T14:00:00+08:00 format
  * @param {string} endDateTime (optional) - end datetime of event in 2016-04-29T18:00:00+08:00 format
  */
-function listEvents(startDateTime, endDateTime){
-  return new Promise(function(fulfill, reject){
-    if (startDateTime != undefined && endDateTime != undefined){
-      var param = {timeMin : startDateTime, timeMax: endDateTime};
-    }
-      request({
-        url: 'https://www.googleapis.com/calendar/v3/calendars/' + USERID + '/events',
-        jwt: jwt,
-        qs: param,
-        useQuerystring : true
-      }, function (err, res, body) {
-        var resp = JSON.parse(body); 
-          if (err){
-            reject('Connection error');
-          } 
-          if (resp.error != undefined){ 
-            reject(resp.error);
-          }
-          fulfill(resp.items); 
-      });
-  });
-   
+exports.listEvents = function(startDateTime, endDateTime) {
+    return new Promise(function(fulfill, reject) {
+        if (startDateTime != undefined && endDateTime != undefined) {
+            var param = { timeMin: startDateTime, timeMax: endDateTime };
+        }
+
+        request({
+            url: 'https://www.googleapis.com/calendar/v3/calendars/' + USERID + '/events',
+            jwt: jwt,
+            qs: param,
+            useQuerystring: true
+        }, function(err, res, body) {
+            var resp = JSON.parse(body);
+            if (err) {
+                console.log("REJECT DIS CRAP");
+                reject({ error: 'Connection error' });
+            }
+
+            if (resp.error != undefined) {
+                console.log("REJECT DA HELL");
+                reject(resp.error);
+            }
+
+            fulfill(resp.items);
+        });
+    });
+
 }
 
 /**
@@ -54,35 +59,35 @@ function listEvents(startDateTime, endDateTime){
  * @param {string} startDateTime - start datetime of event in 2016-04-29T14:00:00+08:00 format
  * @param {string} endDateTime - end datetime of event in 2016-04-29T18:00:00+08:00 format
  */
-function checkTimeslotBusy(startDateTime, endDateTime){
-  var event = {
-    "timeMin": startDateTime,
-    "timeMax": endDateTime,
-    "timeZone": TIMEZONE,
-    "items": [{ "id": USERID}]
-  };
+exports.checkTimeslotBusy = function(startDateTime, endDateTime) {
+    var event = {
+        "timeMin": startDateTime,
+        "timeMax": endDateTime,
+        "timeZone": TIMEZONE,
+        "items": [{ "id": USERID }]
+    };
 
-  return new Promise(function(fulfill, reject){
+    return new Promise(function(fulfill, reject) {
 
-    request.post({
-      url: 'https://www.googleapis.com/calendar/v3/freeBusy',
-      json: true,
-      body: event,
-      jwt: jwt
-    }, function (err, res, body) {  
-      if (err){
-        reject('Connection error');
-      } 
-      if (body.calendars[USERID].errors != undefined){ 
-        reject();
-      }
+        request.post({
+            url: 'https://www.googleapis.com/calendar/v3/freeBusy',
+            json: true,
+            body: event,
+            jwt: jwt
+        }, function(err, res, body) {
+            if (err) {
+                reject({ error: 'Connection error' });
+            }
+            if (body.calendars[USERID].errors != undefined) {
+                reject();
+            }
 
-      console.log(body.calendars[USERID]);
-      var eventsList = body.calendars[USERID].busy; 
-      fulfill(body.calendars[USERID].busy); 
+            console.log(body.calendars[USERID]);
+            var eventsList = body.calendars[USERID].busy;
+            fulfill(body.calendars[USERID].busy);
 
+        });
     });
-  });
 }
 
 /**
@@ -94,35 +99,35 @@ function checkTimeslotBusy(startDateTime, endDateTime){
  * @param {string} location - Location description of event
  * @param {string} status - event status - confirmed, tentative, cancelled; tentative for all queuing
  */
-function insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description ){
-  var event = {
-    "start": {
-      "dateTime": startDateTime
-    },
-    "end": {
-      "dateTime": endDateTime
-    },
-    "location": location,
-    "summary": bookingSummary,
-    "status" : status,
-    "description" : description
-  };
+exports.insertEvent = function(bookingSummary, startDateTime, endDateTime, location, status, description) {
+    var event = {
+        "start": {
+            "dateTime": startDateTime
+        },
+        "end": {
+            "dateTime": endDateTime
+        },
+        "location": location,
+        "summary": bookingSummary,
+        "status": status,
+        "description": description
+    };
 
-  return new Promise(function(fulfill, reject){
-    request.post({
-      url: 'https://www.googleapis.com/calendar/v3/calendars/' + USERID + '/events',
-      json: true,
-      body: event,
-      jwt: jwt
-    }, function (err, res, body) { 
-      if (err) {
-        console.log('Error contacting the Calendar service: ' + err); 
-        reject('Connection error');
-      }
-      if (body.error != undefined){
-        reject(body.error);
-      }
-      fulfill(body); 
+    return new Promise(function(fulfill, reject) {
+        request.post({
+            url: 'https://www.googleapis.com/calendar/v3/calendars/' + USERID + '/events',
+            json: true,
+            body: event,
+            jwt: jwt
+        }, function(err, res, body) {
+            if (err) {
+                console.log('Error contacting the Calendar service: ' + err);
+                reject({ error: 'Connection error' });
+            }
+            if (body.error != undefined) {
+                reject(body.error);
+            }
+            fulfill(body);
+        });
     });
-  });
 }
