@@ -14,4 +14,47 @@ When using Google APIs from the server (or any non-browser based application), a
 ## Authentication to Google APIs done with JWT
 When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
 
+## APIs
+Require calendar-api.js file in your project.
+`var cal = require('./calendar-api.js');`
 
+#####listEvents(startDateTime, endDateTime)
+Returns a promise that lists all events in calendar between `startDateTime` & `endDateTime`.
+Example:
+```javascript
+cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00").then(function(json){
+    //Success
+    console.log("list all events " );
+ }, function (json){
+    //Error
+    console.log("list events error : " + json);
+ });
+```
+
+#####insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description)
+Insert an event on the user's primary calendar. Returns promise of details of booking.
+Example:
+```javascript
+cal.insertEvent("Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
+"Open Pantry", "confirmed", "BYOF").then(function(json){
+		console.log('added event! : ' +JSON.stringify(json));
+	}, function(){
+		console.log('error : ' + json);
+	});;
+```
+
+#####checkTimeslotBusy(startDateTime, endDateTime)
+Checks if queried calendar slot is busy during selected period. 
+Returns promise of list of events at specified slot. Example:
+```javascript
+cal.checkTimeslotBusy("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
+  if (eventsJson != undefined && eventsJson.length > 0){
+    busyOrFree = 'busy';
+  }else{
+    busyOrFree = 'free';
+  }
+  console.log('slot is ' + busyOrFree);  
+}, function(){
+  console.log('error checkTimeslot');
+});
+```
