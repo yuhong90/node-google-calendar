@@ -1,7 +1,9 @@
 # node-google-calendar
 Simple node module that manages google calendar events
 
-## Using Service Accounts
+## Getting Started
+
+####Start Using Service Accounts
 This module does server to server authentication with Google APIs without any users being involved. 
 When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application. 
 
@@ -11,9 +13,14 @@ When using Google APIs from the server (or any non-browser based application), a
 
 3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for that calender to the the Service Account using the supplied email address.
 
-## Authentication to Google APIs done with JWT
-When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
+#### Setup JWT for Google OAuth 
+Authentication to Google APIs done with JWT. When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
 `To install : npm install google-oauth-jwt`
+
+#### Setup bluebird
+Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
+`To install : npm install bluebird`
+
 
 ## APIs
 Require calendar-api.js file in your project.
