@@ -1,5 +1,5 @@
-# node-google-calender
-Simple node module that manages google calender events
+# node-google-calendar
+Simple node module that manages google calendar events
 
 ## Using Service Accounts
 This module does server to server authentication with Google APIs without any users being involved. 
