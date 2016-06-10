@@ -13,6 +13,7 @@ When using Google APIs from the server (or any non-browser based application), a
 
 ## Authentication to Google APIs done with JWT
 When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
+`To install : npm install google-oauth-jwt`
 
 ## APIs
 Require calendar-api.js file in your project.
@@ -54,7 +55,18 @@ cal.checkTimeslotBusy("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").
     busyOrFree = 'free';
   }
   console.log('slot is ' + busyOrFree);  
-}, function(){
-  console.log('error checkTimeslot');
+}, function(err){
+  console.log('error checkTimeslot' + err);
 });
+```
+
+#####deleteEvent(eventId)
+Deletes an Event on Calendar with EventId.
+Returns promise of results. Example:
+```javascript
+    cal.deleteEvent('vglrakdceu6jai4sm5lo5y3ah').then(function(jsonResults) {
+        console.log('delete Event:' + JSON.stringify(jsonResults));
+    }, function(err) {
+        console.log('Error deleteEvent: ' + JSON.stringify(err));
+    });
 ```
