@@ -23,7 +23,10 @@ Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
 
 
 ## APIs
-Require calendar-api.js file in your project.
+[Google Calendar APIs](https://developers.google.com/google-apps/calendar/v3/reference/events) consumed includes list Events, insert Events, delete Event.
+
+To use require calendar-api.js file in your project.
+
 `var cal = require('./calendar-api.js');`
 
 #####listEvents(startDateTime, endDateTime)
