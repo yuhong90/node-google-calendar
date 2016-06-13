@@ -15,10 +15,12 @@ When using Google APIs from the server (or any non-browser based application), a
 
 #### Setup JWT for Google OAuth 
 Authentication to Google APIs done with JWT. When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
+
 `To install : npm install google-oauth-jwt`
 
 #### Setup bluebird
 Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
+
 `To install : npm install bluebird`
 
 
@@ -31,6 +33,7 @@ To use require calendar-api.js file in your project.
 
 #####listEvents(startDateTime, endDateTime)
 Returns a promise that lists all events in calendar between `startDateTime` & `endDateTime`.
+
 Example:
 ```javascript
 cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00").then(function(json){
@@ -44,6 +47,7 @@ cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00").then(fu
 
 #####insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description)
 Insert an event on the user's primary calendar. Returns promise of details of booking.
+
 Example:
 ```javascript
 cal.insertEvent("Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
@@ -56,7 +60,9 @@ cal.insertEvent("Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-
 
 #####checkTimeslotBusy(startDateTime, endDateTime)
 Checks if queried calendar slot is busy during selected period. 
-Returns promise of list of events at specified slot. Example:
+Returns promise of list of events at specified slot. 
+
+Example:
 ```javascript
 cal.checkTimeslotBusy("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
   if (eventsJson != undefined && eventsJson.length > 0){
@@ -72,7 +78,9 @@ cal.checkTimeslotBusy("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").
 
 #####deleteEvent(eventId)
 Deletes an Event on Calendar with EventId.
-Returns promise of results. Example:
+Returns promise of results. 
+
+Example:
 ```javascript
     cal.deleteEvent('vglrakdceu6jai4sm5lo5y3ah').then(function(jsonResults) {
         console.log('delete Event:' + JSON.stringify(jsonResults));
