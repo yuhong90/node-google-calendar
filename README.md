@@ -44,12 +44,12 @@ To use require calendar-api.js file in your project.
 
 `var cal = require('./calendar-api.js');`
 
-#####listEvents(startDateTime, endDateTime)
+#####listEvents(startDateTime, endDateTime, query)
 Returns a promise that lists all events in calendar between `startDateTime` & `endDateTime`.
 
 Example:
 ```javascript
-cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00").then(function(json){
+cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00", "meeting").then(function(json){
     //Success
     console.log("list all events " );
  }, function (json){
@@ -58,16 +58,16 @@ cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00").then(fu
  });
 ```
 
-#####insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description)
+#####insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description, colour)
 Insert an event on the user's primary calendar. Returns promise of details of booking.
 
 Example:
 ```javascript
 cal.insertEvent("Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
-"Open Pantry", "confirmed", "BYOF").then(function(json){
-		console.log('added event! : ' +JSON.stringify(json));
+"Open Pantry", "confirmed", "BYOF", 1).then(function(json){
+		console.log('added event! : ' + JSON.stringify(json));
 	}, function(){
-		console.log('error : ' + json);
+		console.log('error : ' + JSON.stringify(json));
 	});;
 ```
 
