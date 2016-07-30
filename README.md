@@ -1,5 +1,5 @@
 # node-google-calendar
-Simple node module that manages google calendar events
+Simple node module that supports Google Calendar Events API
 
 ## Getting Started
 
@@ -11,7 +11,10 @@ When using Google APIs from the server (or any non-browser based application), a
 
 2. A public/private key pair is generated for the service account, which is created from the Google API console. Take note of the service account's email address and store the service account's P12 private key file in a location accessible to your application. Your application needs them to make authorized API calls.
 
-3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for that calender to the the Service Account using the supplied email address.
+3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for that calender to the the Service Account using the supplied email address under the Google Calendar settings.
+
+4. Update the `settings.js` file with the google account email address under USERID and the generated service account id as SERVICE_ACCT_ID.
+
 
 #### Generating keyfile for Google OAuth 
 Convert the downloaded .p12 key to PEM, so we can use it in the module.
@@ -20,7 +23,7 @@ To do this, run the following in Terminal:
 
 `openssl pkcs12 -in downloaded-key-file.p12 -out converted-key-file.pem -nodes`
 
-Once done update the reference to the KEYFILE var in calendar.js.
+Once done update the reference to the KEYFILE var in `calendar.js`.
 
 #### Setup JWT for Google OAuth 
 Authentication to Google APIs done with JWT. When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
