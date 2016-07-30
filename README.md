@@ -13,6 +13,15 @@ When using Google APIs from the server (or any non-browser based application), a
 
 3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for that calender to the the Service Account using the supplied email address.
 
+#### Generating keyfile for Google OAuth 
+Convert the downloaded .p12 key to PEM, so we can use it in the module.
+
+To do this, run the following in Terminal:
+
+`openssl pkcs12 -in downloaded-key-file.p12 -out converted-key-file.pem -nodes`
+
+Once done update the reference to the KEYFILE var in calendar.js.
+
 #### Setup JWT for Google OAuth 
 Authentication to Google APIs done with JWT. When using OAuth2, authentication is performed using a token that has been obtained first by submitting a JSON Web Token (JWT), using [google-oauth-jwt](https://github.com/extrabacon/google-oauth-jwt).
 
@@ -24,8 +33,9 @@ Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
 `To install : npm install bluebird`
 
 
+
 ## APIs
-[Google Calendar APIs](https://developers.google.com/google-apps/calendar/v3/reference/events) consumed includes list Events, insert Events, delete Event.
+[Google Calendar APIs](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes list Events, insert Events, delete Event.
 
 To use require calendar-api.js file in your project.
 
