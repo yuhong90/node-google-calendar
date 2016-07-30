@@ -3,8 +3,8 @@ var request = require('google-oauth-jwt').requestWithJWT();
 const Promise = require('bluebird');
 const qs = require('querystring');
 
-var KEYFILE = 'keyfile.pem';
-var USERID = require('../settings').userId;
+var KEYFILE = 'newkeyfile.pem';
+var USERID = require('./settings').userId;
 var SERVICE_ACCT_ID = require('../settings').serviceAcctId;
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var jwt = {
@@ -28,25 +28,30 @@ exports.listEvents = function(startDateTime, endDateTime, query) {
         if (startDateTime != undefined && endDateTime != undefined) {
             var param = { timeMin: startDateTime, timeMax: endDateTime, q: query };
         }
-
+        
         request({
             url: 'https://www.googleapis.com/calendar/v3/calendars/' + USERID + '/events',
             jwt: jwt,
             qs: param,
             useQuerystring: true
         }, function(err, res, body) {
-            var resp = JSON.parse(body);
+
             if (err) {
-                console.log("listEvents error");
-                reject({ error: 'Connection error' });
+                console.log("listEvents:" + err);
+                reject({ Error: 'Error Authenticating With Google' });
             }
 
-            if (resp.error != undefined) {
-                console.log("listEvents error");
-                reject(resp.error);
+            var resp;
+            if (body != undefined) {
+                resp = JSON.parse(body);
+
+                if (resp.error != undefined) {
+                    console.log("listEvents error");
+                    reject(resp.error);
+                }
+                fulfill(resp.items);
             }
 
-            fulfill(resp.items);
         });
     });
 };
