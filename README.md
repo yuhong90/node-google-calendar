@@ -36,7 +36,11 @@ Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
 `To install : npm install bluebird`
 
 ## Try it out
-To test it out: `npm run example`
+Update the Settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile path.
+Once done, test it out with: 
+
+`npm run example`
+
 Feel free to also look into example.js.
 
 
@@ -52,7 +56,7 @@ Returns a promise that lists all events in calendar between `startDateTime` & `e
 
 Example:
 ```javascript
-cal.listEvents("2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00", "meeting").then(function(json){
+cal.listEvents(calendarId,"2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00", "meeting").then(function(json){
     //Success
     console.log("list all events " );
  }, function (json){
@@ -66,7 +70,7 @@ Insert an event on the user's primary calendar. Returns promise of details of bo
 
 Example:
 ```javascript
-cal.insertEvent("Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
+cal.insertEvent(calendarId, "Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
 "Open Pantry", "confirmed", "BYOF", 1).then(function(json){
 		console.log('added event! : ' + JSON.stringify(json));
 	}, function(){
@@ -80,7 +84,7 @@ Returns promise of list of events at specified slot.
 
 Example:
 ```javascript
-cal.checkTimeslotBusy("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
+cal.checkBusyPeriod("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
   if (eventsJson != undefined && eventsJson.length > 0){
     busyOrFree = 'busy';
   }else{
