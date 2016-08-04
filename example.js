@@ -1,5 +1,5 @@
 //example.js
-const CALENDAR_URL = require('./config/settings').calendarUrl;
+const CALENDAR_URL = require('./config/Settings').calendarUrl;
 const CONFIG = require('./config/Settings');
 const CalendarAPI = require('./CalendarAPI');
 let cal = new CalendarAPI(CONFIG);
@@ -12,7 +12,6 @@ function examples() {
   // deleteEvent(calendarIdList['primary'], "6qc97pdhfei9snh0dn92o32248");
   // checkBusyPeriod(calendarIdList['primary'], "2016-08-04T09:00:00+08:00", "2016-08-04T21:00:00+08:00");
   listBookedEvent(calendarIdList['primary'], "2016-08-04T09:00:00+08:00", "2016-08-04T21:00:00+08:00", "drone");
-
 }
 
 function listBookedEvent(calendarId, startDateTime, endDateTime, query) {
@@ -36,7 +35,7 @@ function listBookedEvent(calendarId, startDateTime, endDateTime, query) {
       console.log(bookedEventsArray);
 
     }).catch(err => {
-      console.log("listBookedEvent Error: " + err);
+      console.log("Error: listBookedEvent -" + err);
     });
 };
 
@@ -58,7 +57,7 @@ function insertEvent(calendarId, eventSummary, startDateTime, endDateTime, locat
       console.log(results);
     })
     .catch(err => {
-      console.log("insertEvent Error: " + err);
+      console.log("Error: insertEvent-" + err);
     });
 };
 
@@ -70,7 +69,7 @@ function deleteEvent(calendarId, eventId) {
       console.log(resp);
     })
     .catch(err => {
-      console.log("deleteEvent Error: " + err);
+      console.log("Error: deleteEvent-" + err);
     });
 };
 
@@ -81,6 +80,6 @@ function checkBusyPeriod(calendarId, startDateTime, endDateTime) {
       console.log(resp);
     })
     .catch(err => {
-      console.log("checkBusyPeriod Error: " + err);
+      console.log("Error: checkBusyPeriod -" + err);
     });
 };

@@ -3,33 +3,38 @@ const requestWithJWT = Promise.promisify(require('google-oauth-jwt').requestWith
 const qs = require('querystring');
 
 class CalendarAPI {
-    
+
   constructor(config) {
-   this._JWT = {
-     email: config.serviceAcctId,
-     keyFile: config.keyFile,
-     scopes: ['https://www.googleapis.com/auth/calendar']
-   };
-   this._TIMEZONE = "UTC+08:00";
- }
+    this._JWT = {
+      email: config.serviceAcctId,
+      keyFile: config.keyFile,
+      scopes: ['https://www.googleapis.com/auth/calendar']
+    };
+    this._TIMEZONE = "UTC+08:00";
+  }
+
+  _checkCalendarId(calendarId) {
+    if (calendarId === undefined || calendarId == '') {
+      throw new Error('Missing argument; calendarId needed; Check if defined in ./config/Settings.js');
+    }
+  }
 
   _request(calendarId, params) {
-   // todo: need better validation
-   if (calendarId === undefined || calendarId == '') {
-     throw new Error('Missing argument; calendarId needed');
-   }else if (params === undefined) {
-     throw new Error('Missing argument; query terms needed');
-   }
+    // todo: need better validation
+    this._checkCalendarId(calendarId);
+    if (params === undefined) {
+      throw new Error('Missing argument; query terms needed');
+    }
 
-   let options = {
-     url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events',
-     jwt: this._JWT,
-     qs: params,
-     useQuerystring: true
-   };
+    let options = {
+      url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events',
+      jwt: this._JWT,
+      qs: params,
+      useQuerystring: true
+    };
 
-   return requestWithJWT(options);
- }
+    return requestWithJWT(options);
+  }
 
   /**
    * Returns a promise that list all events on calendar during selected period.
@@ -43,7 +48,7 @@ class CalendarAPI {
       params = { timeMin: startDateTime, timeMax: endDateTime, q: query };
     }
 
-    return this._request(calendarId,params).then(resp => {
+    return this._request(calendarId, params).then(resp => {
 
         if (resp.statusCode !== 200) {
           throw new Error(resp.statusCode + ':\n' + resp.body);
@@ -66,6 +71,7 @@ class CalendarAPI {
    * @param {string} status - event status - confirmed, tentative, cancelled; tentative for all queuing
    */
   insertEvent(calendarId, eventSummary, startDateTime, endDateTime, location, status, description, colour) {
+    this._checkCalendarId(calendarId);
     let event = {
       "start": {
         "dateTime": startDateTime
@@ -82,7 +88,7 @@ class CalendarAPI {
 
     let options = {
       method: 'POST',
-      url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId+ '/events',
+      url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events',
       json: true,
       body: event,
       jwt: this._JWT
@@ -102,6 +108,7 @@ class CalendarAPI {
   }
 
   deleteEvent(calendarId, eventId) {
+    this._checkCalendarId(calendarId);
     if (eventId === undefined) {
       throw new Error('Missing argument; need to pass in eventId');
     }
@@ -116,7 +123,7 @@ class CalendarAPI {
         }
         let status = resp.statusCode;
 
-        return {statusCode: status, message:'Event delete success'};
+        return { statusCode: status, message: 'Event delete success' };
       })
       .catch(err => {
         throw err;
@@ -131,6 +138,7 @@ class CalendarAPI {
    * @param {string} endDateTime - end datetime of event in 2016-04-29T18:00:00+08:00 format
    */
   checkBusyPeriod(calendarId, startDateTime, endDateTime) {
+    this._checkCalendarId(calendarId);
     let event = {
       "timeMin": startDateTime,
       "timeMax": endDateTime,
@@ -152,7 +160,7 @@ class CalendarAPI {
       .catch(err => {
         throw err;
       });
-    }
+  }
 }
 
 module.exports = CalendarAPI;
