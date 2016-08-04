@@ -35,6 +35,9 @@ Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
 
 `To install : npm install bluebird`
 
+## Try it out
+To test it out: `npm run example`
+Feel free to also look into example.js.
 
 
 ## APIs
