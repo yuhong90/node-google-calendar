@@ -35,6 +35,7 @@ Promise library [bluebird](https://github.com/petkaantonov/bluebird) is used.
 
 `To install : npm install bluebird`
 
+
 ## Try it out
 Update the Settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile path.
 Once done, test it out with: 
@@ -51,7 +52,7 @@ To use require calendar-api.js file in your project.
 
 `var cal = require('./calendar-api.js');`
 
-#####listEvents(startDateTime, endDateTime, query)
+#####listEvents(calendarId, startDateTime, endDateTime, query)
 Returns a promise that lists all events in calendar between `startDateTime` & `endDateTime`.
 
 Example:
@@ -65,7 +66,7 @@ cal.listEvents(calendarId,"2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:0
  });
 ```
 
-#####insertEvent(bookingSummary, startDateTime, endDateTime, location, status, description, colour)
+#####insertEvent(calendarId, bookingSummary, startDateTime, endDateTime, location, status, description, colour)
 Insert an event on the user's primary calendar. Returns promise of details of booking.
 
 Example:
@@ -78,13 +79,13 @@ cal.insertEvent(calendarId, "Lunch Meeting with Edison", "2016-05-23T12:00:00+08
 	});;
 ```
 
-#####checkTimeslotBusy(startDateTime, endDateTime)
+#####checkBusyPeriod(calendarId, startDateTime, endDateTime)
 Checks if queried calendar slot is busy during selected period. 
 Returns promise of list of events at specified slot. 
 
 Example:
 ```javascript
-cal.checkBusyPeriod("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
+cal.checkBusyPeriod(calendarId,"2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
   if (eventsJson != undefined && eventsJson.length > 0){
     busyOrFree = 'busy';
   }else{
@@ -96,13 +97,13 @@ cal.checkBusyPeriod("2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").th
 });
 ```
 
-#####deleteEvent(eventId)
+#####deleteEvent(calendarId, eventId)
 Deletes an Event on Calendar with EventId.
 Returns promise of results. 
 
 Example:
 ```javascript
-    cal.deleteEvent('vglrakdceu6jai4sm5lo5y3ah').then(function(jsonResults) {
+    cal.deleteEvent(calendarId,'vglrakdceu6jai4sm5lo5y3ah').then(function(jsonResults) {
         console.log('delete Event:' + JSON.stringify(jsonResults));
     }, function(err) {
         console.log('Error deleteEvent: ' + JSON.stringify(err));
