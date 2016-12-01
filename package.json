@@ -2,7 +2,7 @@
   "name": "node-google-calendar",
   "version": "0.1.1",
   "description": "Simple node module that supports Google Calendar Events API",
-  "main": "CalendarAPI.js",
+  "main": "./src/CalendarAPI.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
