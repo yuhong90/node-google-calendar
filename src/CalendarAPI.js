@@ -15,7 +15,7 @@ class CalendarAPI {
 
   _checkCalendarId(calendarId) {
     if (calendarId === undefined || calendarId == '') {
-      throw new Error('Missing argument; calendarId needed; Check if defined in ./config/Settings.js');
+      throw new Error('Missing argument; calendarId needed; Check if defined in Settings file');
     }
   }
 
