@@ -33,7 +33,7 @@ First, install the package with: `npm i node-google-calendar`.
 Update the settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile location.
 
 Example: 
-```
+```javascript
 const KEYFILE = '<yourpem.pem>';
 var SERVICE_ACCT_ID = '<your service account id>';
 
@@ -59,6 +59,7 @@ To use, require the module file in your project and pass in the settings file.
 ```
 
 You should now be able to query your specified calendar and try out the following examples. 
+
 
 
 ## APIs
