@@ -1,7 +1,7 @@
 # node-google-calendar
 Simple node module that supports Google Calendar Events API
 
-## Getting Started
+## Preparations
 
 ####Start Using Service Accounts
 This module does server to server authentication with Google APIs without any users being involved. 
@@ -26,8 +26,11 @@ To do this, run the following in Terminal:
 Once done update the reference to the KEYFILE var in `settings.js`.
 
 
-## Try it out
-Update the settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile path.
+## Getting Started
+
+First, install the package with: `npm i node-google-calendar`.
+
+Update the settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile location.
 
 Example: 
 ```
@@ -47,15 +50,19 @@ module.exports.keyfile = KEYFILE;
 module.exports.calendarUrl = CALENDAR_URL;
 ```
 
-To use, require the module file in your project.
+To use, require the module file in your project and pass in the settings file.
 
-` const CalendarAPI = require('node-google-calendar');
+```javascript
+  const CalendarAPI = require('node-google-calendar');
   const CONFIG = require('./config/Settings');
-  let cal = new CalendarAPI(CONFIG);  `
+  let cal = new CalendarAPI(CONFIG);  
+```
+
+You should now be able to query your specified calendar and try out the following examples. 
 
 
 ## APIs
-[Google Calendar APIs](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes list Events, insert Events, delete Event.
+[Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes list Events, insert Events, delete Event.
 
 
 #####listEvents(calendarId, startDateTime, endDateTime, query)
@@ -115,3 +122,5 @@ Example:
       console.log('Error deleteEvent: ' + JSON.stringify(err));
   });
 ```
+
+More examples [here](https://github.com/yuhong90/node-google-calendar/blob/master/example/Example.js).

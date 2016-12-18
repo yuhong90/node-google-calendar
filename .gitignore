@@ -2,3 +2,4 @@
 *.log
 .npmignore
 config
+node_modules
