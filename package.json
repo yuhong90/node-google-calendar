@@ -1,6 +1,6 @@
 {
   "name": "node-google-calendar",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple node module that supports Google Calendar Events API",
   "main": "./src/CalendarAPI.js",
   "scripts": {
