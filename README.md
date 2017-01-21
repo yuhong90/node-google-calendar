@@ -11,9 +11,11 @@ When using Google APIs from the server (or any non-browser based application), a
 
 2. A public/private key pair is generated for the service account, which is created from the Google API console. Take note of the service account's email address and store the service account's P12 private key file in a location accessible to your application. Your application needs them to make authorized API calls.
 
-3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for that calender to the the Service Account using the supplied email address under the Google Calendar settings.
+3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for each of the calenders to the created Service Account using the supplied email address under the Google Calendar settings.
 
-4. Create a `settings.js` file with the google account email address under USERID and the generated service account id as SERVICE_ACCT_ID.
+4. Create a `settings.js` file with the google account email address under USERID and the generated service account id as SERVICE_ACCT_ID. 
+
+5. Update `settings.js` and specify IDs of each calendar that the service account has been granted access to. 
 
 
 #### Generating keyfile for Google OAuth 
@@ -30,7 +32,7 @@ Once done update the reference to the KEYFILE var in `settings.js`.
 
 First, install the package with: `npm i node-google-calendar`.
 
-Update the settings.js file with your calendarId, calendarUrl, serviceAcctId & keyfile location.
+Update the settings.js file with calendarId, calendarUrl, serviceAcctId & keyfile location in the shown format.
 
 Example: 
 ```javascript

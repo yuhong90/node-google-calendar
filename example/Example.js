@@ -1,7 +1,7 @@
 //example.js
-const CALENDAR_URL = require('./config/Settings').calendarUrl;
-const CONFIG = require('./config/Settings');
-const CalendarAPI = require('./CalendarAPI');
+const CALENDAR_URL = require('../config/Local-Settings').calendarUrl;
+const CONFIG = require('../config/Local-Settings');
+const CalendarAPI = require('../src/CalendarAPI');
 let cal = new CalendarAPI(CONFIG);
 let calendarIdList = CONFIG.calendarId;
 
@@ -11,7 +11,7 @@ function examples() {
   // insertEvent(calendarIdList['primary'], "EventName", "2016-08-04T10:00:00+08:00", "2016-08-04T11:00:00+08:00", "drone", "confirmed", "some description here");
   // deleteEvent(calendarIdList['primary'], "6qc97pdhfei9snh0dn92o32248");
   // checkBusyPeriod(calendarIdList['primary'], "2016-08-04T09:00:00+08:00", "2016-08-04T21:00:00+08:00");
-  listBookedEvent(calendarIdList['primary'], "2016-08-04T09:00:00+08:00", "2016-08-04T21:00:00+08:00", "drone");
+  listBookedEvent(calendarIdList['primary'], "2017-01-22T09:00:00+08:00", "2017-01-22T21:00:00+08:00", "drone");
 }
 
 function listBookedEvent(calendarId, startDateTime, endDateTime, query) {

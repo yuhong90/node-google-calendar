@@ -1,7 +1,6 @@
 const Promise = require('bluebird');
 const requestWithJWT = Promise.promisify(require('google-oauth-jwt').requestWithJWT());
 const qs = require('querystring');
-
 class CalendarAPI {
 
   constructor(config) {
@@ -37,7 +36,7 @@ class CalendarAPI {
   }
 
   /**
-   * Returns a promise that list all events on calendar during selected period.
+   * Returns a promise that list all events on calendar during selected period ordered by insert order.
    *
    * @param {string} startDateTime (optional) - start datetime of event in 2016-04-29T14:00:00+08:00 format
    * @param {string} endDateTime (optional) - end datetime of event in 2016-04-29T18:00:00+08:00 format
@@ -45,7 +44,7 @@ class CalendarAPI {
   listEvents(calendarId, startDateTime, endDateTime, query) {
     let params;
     if (startDateTime !== undefined && endDateTime !== undefined) {
-      params = { timeMin: startDateTime, timeMax: endDateTime, q: query };
+      params = { timeMin: startDateTime, timeMax: endDateTime, q: query};
     }
 
     return this._request(calendarId, params).then(resp => {

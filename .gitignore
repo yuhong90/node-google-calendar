@@ -3,3 +3,4 @@
 .npmignore
 config
 node_modules
+/nbproject/private/

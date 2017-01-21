@@ -19,7 +19,8 @@
     "node",
     "google",
     "calendar",
-    "event"
+    "event",
+    "server-to-server-authentication"
   ],
   "author": "Shek Yu Hong",
   "license": "ISC",
