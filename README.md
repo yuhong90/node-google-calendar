@@ -9,7 +9,7 @@ When using Google APIs from the server (or any non-browser based application), a
 
 1. Create a service account if you dont have one. For more information about service accounts and server-to-server interactions such as those between a web application and a Google service: https://developers.google.com/identity/protocols/OAuth2ServiceAccount#authorizingrequests
 
-2. A public/private key pair is generated for the service account, which is created from the Google API console. Take note of the service account's email address and store the service account's P12 private key file in a location accessible to your application. Your application needs them to make authorized API calls.
+2. A public/private key pair is generated for the service account, which is created from the Google API console. Take note of the service account's email address and store the service account's json or P12 private key file in a location accessible to your application. Your application needs them to make authorized API calls.
 
 3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for each of the calenders to the created Service Account using the supplied email address under the Google Calendar settings.
 
@@ -18,23 +18,36 @@ When using Google APIs from the server (or any non-browser based application), a
 5. Update `settings.js` and specify IDs of each calendar that the service account has been granted access to. 
 
 
-#### Generating keyfile for Google OAuth 
-Convert the downloaded .p12 key to PEM, so we can use it in the module.
+#### Providing key or keyfile for Google OAuth 
+
+__To use the PEM keyfile__
+Convert the downloaded .p12 key to PEM.
 
 To do this, run the following in Terminal:
 
 `openssl pkcs12 -in downloaded-key-file.p12 -out converted-key-file.pem -nodes`
 
-Once done update the reference to the KEYFILE var in `settings.js`.
+Once done, export the keyfile var in `settings.js`.
 
+__To use the JSON key__
+Read the json key's private key and export the key var in `settings.js`.
+
+To do that, add the following code in your `settings.js`.
+```javascript
+var fs = require('fs');
+const KEYPATH = '../json-googleapi-key';
+var json = fs.readFileSync(KEYPATH, 'utf8');
+var key = JSON.parse(json).private_key;
+module.exports.key = key;
+```
 
 ## Getting Started
 
 First, install the package with: `npm i node-google-calendar`.
 
-Update the settings.js file with calendarId, calendarUrl, serviceAcctId & keyfile location in the shown format.
+Update the settings.js config file with calendarId, calendarUrl, serviceAcctId & keyfile location.
 
-Example: 
+Your config file should look something like this:
 ```javascript
 const KEYFILE = '<yourpem.pem>';
 var SERVICE_ACCT_ID = '<your service account id>';
@@ -48,7 +61,7 @@ var CALENDAR_ID = {
 
 module.exports.calendarId = CALENDAR_ID;
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.keyfile = KEYFILE;
+module.exports.keyfile = KEYFILE;       //or if using json keys - module.exports.key = key; 
 module.exports.calendarUrl = CALENDAR_URL;
 ```
 
