@@ -6,9 +6,13 @@ class CalendarAPI {
   constructor(config) {
     this._JWT = {
       email: config.serviceAcctId,
-      keyFile: config.keyFile,
       scopes: ['https://www.googleapis.com/auth/calendar']
     };
+    if (config.keyFile !== undefined) {
+      this._JWT.keyFile = config.keyFile;
+    } else if (config.key !== undefined) {
+      this._JWT.key = config.key;
+    }
     this._TIMEZONE = "UTC+08:00";
   }
 
@@ -44,17 +48,17 @@ class CalendarAPI {
   listEvents(calendarId, startDateTime, endDateTime, query) {
     let params;
     if (startDateTime !== undefined && endDateTime !== undefined) {
-      params = { timeMin: startDateTime, timeMax: endDateTime, q: query};
+      params = { timeMin: startDateTime, timeMax: endDateTime, q: query };
     }
 
     return this._request(calendarId, params).then(resp => {
 
-        if (resp.statusCode !== 200) {
-          throw new Error(resp.statusCode + ':\n' + resp.body);
-        };
-        let body = JSON.parse(resp.body);
-        return body.items;
-      })
+      if (resp.statusCode !== 200) {
+        throw new Error(resp.statusCode + ':\n' + resp.body);
+      };
+      let body = JSON.parse(resp.body);
+      return body.items;
+    })
       .catch(err => {
         throw err;
       });
@@ -95,12 +99,12 @@ class CalendarAPI {
 
     return requestWithJWT(options).then(resp => {
 
-        if (resp.statusCode !== 200) {
-          throw new Error(resp.statusCode + ':\n' + resp.body);
-        };
-        return resp;
+      if (resp.statusCode !== 200) {
+        throw new Error(resp.statusCode + ':\n' + resp.body);
+      };
+      return resp;
 
-      })
+    })
       .catch(err => {
         throw err;
       });
@@ -113,17 +117,17 @@ class CalendarAPI {
     }
 
     return requestWithJWT({
-        method: 'DELETE',
-        url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events/' + eventId,
-        jwt: this._JWT
-      }).then(resp => {
-        if (resp.statusCode !== 204) {
-          throw new Error(resp.statusCode + ':\n' + resp.body);
-        }
-        let status = resp.statusCode;
+      method: 'DELETE',
+      url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events/' + eventId,
+      jwt: this._JWT
+    }).then(resp => {
+      if (resp.statusCode !== 204) {
+        throw new Error(resp.statusCode + ':\n' + resp.body);
+      }
+      let status = resp.statusCode;
 
-        return { statusCode: status, message: 'Event delete success' };
-      })
+      return { statusCode: status, message: 'Event delete success' };
+    })
       .catch(err => {
         throw err;
       });
@@ -154,8 +158,8 @@ class CalendarAPI {
     };
 
     return requestWithJWT(options).then(resp => {
-        return resp.body.calendars[calendarId].busy;
-      })
+      return resp.body.calendars[calendarId].busy;
+    })
       .catch(err => {
         throw err;
       });
