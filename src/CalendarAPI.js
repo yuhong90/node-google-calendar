@@ -18,9 +18,9 @@ class CalendarAPI {
 		this._TIMEZONE = config.timezone;
 	}
 
-	_checkCalendarId(calendarId) {
+	_checkCalendarId(calendarId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			throw new Error('Missing argument; calendarId needed; Check if defined in Settings file');
+			throw new Error(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
 		}
 	}
 
@@ -42,28 +42,27 @@ class CalendarAPI {
 	}
 
 	/**
-	 * Returns a promise that list all events on calendar during selected period ordered by insert order.
-	 *
-	 * @param {string} startDateTime (optional) - start datetime of event in 2016-04-29T14:00:00+08:00 format
-	 * @param {string} endDateTime (optional) - end datetime of event in 2016-04-29T18:00:00+08:00 format
+	 * Returns a promise that list all events on calendar during selected period
+	 * 
+	 * @param {string} calendarId - Calendar identifier
+	 * @param {datetime} timeMin (optional) - start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
+	 * @param {datetime} timeMax (optional) - end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
+	 * @param {string} q (optional) - Free text search terms to find events that match these terms in any field, except for extended properties. 
+	 * More Optional query parameters @ https://developers.google.com/google-apps/calendar/v3/reference/events/list
 	 */
-	listEvents(calendarId, startDateTime, endDateTime, query) {
-		let params;
-		if (startDateTime !== undefined && endDateTime !== undefined) {
-			params = { timeMin: startDateTime, timeMax: endDateTime, q: query };
-		}
+	listEvents(calendarId, params) {
+		this._checkCalendarId(calendarId, 'listEvents Error');
 
 		return this._request(calendarId, params).then(resp => {
-
 			if (resp.statusCode !== 200) {
 				throw new Error(resp.statusCode + ':\n' + resp.body);
 			};
+
 			let body = JSON.parse(resp.body);
 			return body.items;
-		})
-			.catch(err => {
-				throw err;
-			});
+		}).catch(err => {
+			throw new Error('ListEvents Error: ' + err);
+		});
 	}
 
 	/**
