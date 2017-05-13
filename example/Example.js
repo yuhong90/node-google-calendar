@@ -8,10 +8,10 @@ let calendarIdList = CONFIG.calendarId;
 examples();
 
 function examples() {
-	// insertEvent(calendarIdList['primary'], "EventName", "2016-08-04T10:00:00+08:00", "2016-08-04T11:00:00+08:00", "drone", "confirmed", "some description here");
+	// insertEvent(calendarIdList['primary'], "TestEventName", "2017-05-14T10:00:00+08:00", "2017-05-14T11:00:00+08:00", "drone", "confirmed", "some description here");
 	// deleteEvent(calendarIdList['primary'], "6qc97pdhfei9snh0dn92o32248");
 	// checkBusyPeriod(calendarIdList['primary'], "2016-08-04T09:00:00+08:00", "2016-08-04T21:00:00+08:00");
-	listSingleEventsWithinDateRange(calendarIdList['drone'], "2017-05-01T09:00:00+08:00", "2017-05-07T21:00:00+08:00", "Drone");
+	listSingleEventsWithinDateRange(calendarIdList['primary'], "2017-05-14T09:00:00+08:00", "2017-05-14T21:00:00+08:00", "Drone");
 	// listAllEventsInCalendar(calendarIdList['primary']);
 }
 function listAllEventsInCalendar(calendarId) {
@@ -71,8 +71,21 @@ function listSingleEventsWithinDateRange(calendarId, startDateTime, endDateTime,
 };
 
 function insertEvent(calendarId, eventSummary, startDateTime, endDateTime, location, status, description) {
-	let colorId = 1;
-	cal.insertEvent(calendarId, eventSummary, startDateTime, endDateTime, location, status, description, colorId)
+	let event = {
+		"start": {
+			"dateTime": startDateTime
+		},
+		"end": {
+			"dateTime": endDateTime
+		},
+		"location": location,
+		"summary": eventSummary,
+		"status": status,
+		"description": description,
+		"colorId": 1
+	};
+
+	cal.insertEvent(calendarId, event)
 		.then(resp => {
 			let json = resp.body;
 			let results = {
