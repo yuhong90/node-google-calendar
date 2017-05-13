@@ -33,13 +33,13 @@ class CalendarAPI {
 	}
 
 	_getRequest(calendarId, url, params, jwt) {
-		// todo: need better validation
 		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
-		}
-		if (params === undefined) {
+		} else if (params === undefined) {
 			throw new Error('Missing argument; query terms needed');
+		} else if (jwt === undefined) {
+			throw new Error('Missing argument; jwt needed');
 		}
 
 		let options = {
@@ -56,9 +56,10 @@ class CalendarAPI {
 		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
-		}
-		if (params === undefined) {
+		} else if (params === undefined) {
 			throw new Error('Missing argument; query terms needed');
+		} else if (jwt === undefined) {
+			throw new Error('Missing argument; jwt needed');
 		}
 
 		let options = {
@@ -72,6 +73,48 @@ class CalendarAPI {
 		return requestWithJWT(options);
 	}
 
+	_postRequestWithQueryString(calendarId, url, params, jwt) {
+		this._checkCalendarId(calendarId);
+		if (url === undefined) {
+			throw new Error('Missing argument; requst url needed');
+		} else if (params === undefined) {
+			throw new Error('Missing argument; query terms needed');
+		} else if (jwt === undefined) {
+			throw new Error('Missing argument; jwt needed');
+		}
+
+		let options = {
+			method: 'POST',
+			url: url,
+			jwt: jwt,
+			qs: params,
+			json: true
+		};
+		return requestWithJWT(options);
+	}
+
+	_putRequest(calendarId, url, params, jwt) {
+		this._checkCalendarId(calendarId);
+		if (url === undefined) {
+			throw new Error('Missing argument; requst url needed');
+		} else if (params === undefined) {
+			throw new Error('Missing argument; query terms needed');
+		} else if (jwt === undefined) {
+			throw new Error('Missing argument; jwt needed');
+		}
+
+		let options = {
+			method: 'PUT',
+			url: url,
+			jwt: jwt,
+			body: params,
+			json: true
+		};
+
+		return requestWithJWT(options);
+	}
+
+
 	/**
 	 * Returns a promise that list all events on calendar during selected period
 	 * 
@@ -79,7 +122,6 @@ class CalendarAPI {
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
-	 * More Optional query parameters @ https://developers.google.com/google-apps/calendar/v3/reference/events/list
 	 */
 	listEvents(calendarId, params) {
 		this._checkCalendarId(calendarId, 'listEvents');
@@ -94,7 +136,6 @@ class CalendarAPI {
 			});
 	}
 
-
 	/**
 	 * Returns a promise that list all events on calendar during selected period
 	 * 
@@ -102,7 +143,6 @@ class CalendarAPI {
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
-	 * More Optional query parameters @ https://developers.google.com/google-apps/calendar/v3/reference/events/list
 	 */
 	getEvent(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'GetEvent');
@@ -114,6 +154,25 @@ class CalendarAPI {
 				return body;
 			}).catch(err => {
 				throw new Error('GetEvent: ' + err);
+			});
+	}
+
+	/**
+	 * Creates an event based on a simple text string.
+	 * 
+	 * @param {string} calendarId 					- Calendar identifier
+	 * @param {string} params.text 					- The text describing the event to be created.
+	 */
+	quickAddEvent(calendarId, params) {
+		this._checkCalendarId(calendarId, 'QuickAddEvent');
+
+		return this._postRequestWithQueryString(calendarId, `${gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				return resp.body;
+			})
+			.catch(err => {
+				throw new Error('QuickAddEvent: ' + err);
 			});
 	}
 
@@ -144,7 +203,26 @@ class CalendarAPI {
 	}
 
 	/**
-	 * Deletes an event on the calendar specified. Returns promise of details of booking
+	 * Updates an event on the calendar specified. Returns promise of details of updated event
+	 *
+	 * @param {string} calendarId 					- Calendar identifier
+	 * @param {string} eventId 						- EventId specifying event to update
+	 */
+	updateEvent(calendarId, eventId, params) {
+		this._checkCalendarId(calendarId, 'UpdateEvent');
+
+		return this._putRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				return resp.body;
+			})
+			.catch(err => {
+				throw new Error('UpdateEvent: ' + err);
+			});
+	}
+
+	/**
+	 * Deletes an event on the calendar specified. Returns promise with success msg if success
 	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to delete
@@ -153,7 +231,7 @@ class CalendarAPI {
 	deleteEvent(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'DeleteEvent');
 		if (eventId === undefined) {
-			throw new Error('deleteEvent: Missing argument; need to pass in eventId');
+			throw new Error('deleteEvent: Missing eventId argument');
 		}
 		let options = {
 			method: 'DELETE',
@@ -194,6 +272,30 @@ class CalendarAPI {
 	}
 
 	/**
+	 * Moves an event to another calendar, i.e. changes an event's organizer.
+	 * Returns updated event object of moved object when successful.
+	 *
+	 * @param {string} calendarId			- Calendar identifier
+	 * @param {string} eventId 				- EventId specifying event to move
+	 * @param {string} params.destination 	- Destination CalendarId to move event to
+	 */
+	moveEvent(calendarId, eventId, params) {
+		this._checkCalendarId(calendarId, 'MoveEvent');
+		if (params.destination === undefined) {
+			throw new Error('moveEvent: Missing destination CalendarId argument');
+		}
+
+		return this._postRequestWithQueryString(calendarId, `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				return resp.body;
+			})
+			.catch(err => {
+				throw new Error('MoveEvent: ' + err);
+			});
+	}
+
+	/**
 	 * Checks when queried calendar is busy/ during selected time range.
 	 * Returns promise of list of start and end timings that are busy with time range.
 	 *
@@ -217,12 +319,6 @@ class CalendarAPI {
 			.catch(err => {
 				throw new Error('CheckBusy: ' + err);
 			});
-
-		// return requestWithJWT(options).then(resp => {
-		// 	return resp.body.calendars[calendarId].busy;
-		// }).catch(err => {
-		// 	throw err;
-		// });
 	}
 }
 
