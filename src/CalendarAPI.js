@@ -33,7 +33,6 @@ class CalendarAPI {
 	}
 
 	_getRequest(calendarId, url, params, jwt) {
-		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
 		} else if (params === undefined) {
@@ -53,7 +52,6 @@ class CalendarAPI {
 	}
 
 	_postRequest(calendarId, url, params, jwt) {
-		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
 		} else if (params === undefined) {
@@ -74,7 +72,6 @@ class CalendarAPI {
 	}
 
 	_postRequestWithQueryString(calendarId, url, params, jwt) {
-		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
 		} else if (params === undefined) {
@@ -94,7 +91,6 @@ class CalendarAPI {
 	}
 
 	_putRequest(calendarId, url, params, jwt) {
-		this._checkCalendarId(calendarId);
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
 		} else if (params === undefined) {
@@ -115,8 +111,7 @@ class CalendarAPI {
 	}
 
 
-	/**
-	 * Returns a promise that list all events on calendar during selected period
+	/** Returns a promise that list all events on calendar during selected period
 	 * 
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
@@ -136,8 +131,7 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Returns a promise that list all events on calendar during selected period
+	/** Returns a promise that list all events on calendar during selected period
 	 * 
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
@@ -157,8 +151,7 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Creates an event based on a simple text string.
+	/** Creates an event based on a simple text string.
 	 * 
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} params.text 					- The text describing the event to be created.
@@ -176,8 +169,7 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Insert an event on the calendar specified. Returns promise of details of event created within response body from google
+	/** Insert an event on the calendar specified. Returns promise of details of event created within response body from google
 	 *
 	 * @param {string} calendarId 						- Calendar identifier
 	 * @param {string} params.summary 					- Event title to be specified in calendar event summary. Free-text
@@ -195,15 +187,14 @@ class CalendarAPI {
 		return this._postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return body;
+				return resp.body;
 			})
 			.catch(err => {
 				throw new Error('InsertEvent: ' + err);
 			});
 	}
 
-	/**
-	 * Updates an event on the calendar specified. Returns promise of details of updated event
+	/** Updates an event on the calendar specified. Returns promise of details of updated event
 	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to update
@@ -221,8 +212,7 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Deletes an event on the calendar specified. Returns promise with success msg if success
+	/** Deletes an event on the calendar specified. Returns promise with success msg if success
 	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to delete
@@ -251,12 +241,11 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Returns instances of the specified recurring event.
+	/** Returns instances of the specified recurring event.
 	 * 	 
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to delete
-	*/
+	 */
 	eventInstances(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'EventInstances');
 
@@ -271,9 +260,8 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Moves an event to another calendar, i.e. changes an event's organizer.
-	 * Returns updated event object of moved object when successful.
+	/** Moves an event to another calendar, i.e. changes an event's organizer.
+	 *  Returns updated event object of moved object when successful.
 	 *
 	 * @param {string} calendarId			- Calendar identifier
 	 * @param {string} eventId 				- EventId specifying event to move
@@ -295,9 +283,25 @@ class CalendarAPI {
 			});
 	}
 
-	/**
-	 * Checks when queried calendar is busy/ during selected time range.
-	 * Returns promise of list of start and end timings that are busy with time range.
+	/** Watch for changes to Events resources
+	 * 
+	 * @param {string} calendarId		- Calendar identifier
+	 */
+	watchEvent(calendarId, params) {
+		this._checkCalendarId(calendarId, 'WatchEvent');
+
+		return this._postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				return resp.body;
+			})
+			.catch(err => {
+				throw new Error('WatchEvent: ' + err);
+			});
+	}
+
+	/** Checks when queried calendar is busy/ during selected time range.
+	 *  Returns promise of list of start and end timings that are busy with time range.
 	 *
 	 * @param {string} calendarId		- Calendar identifier
 	 * @param {string} params.timeMin 	- start datetime of event in 2016-04-29T14:00:00+08:00 format
@@ -318,6 +322,30 @@ class CalendarAPI {
 			})
 			.catch(err => {
 				throw new Error('CheckBusy: ' + err);
+			});
+	}
+
+	getSetting(settingId) {
+		return this._getRequest('', `https://www.googleapis.com/calendar/v3/users/me/settings/${settingId}`, '', this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				let body = JSON.parse(resp.body);
+				return body;
+			})
+			.catch(err => {
+				throw new Error('getSetting: ' + err);
+			});
+	}
+
+	listSettings(params) {
+		return this._getRequest('', 'https://www.googleapis.com/calendar/v3/users/me/settings', params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				let body = JSON.parse(resp.body);
+				return body;
+			})
+			.catch(err => {
+				throw new Error('listSettings: ' + err);
 			});
 	}
 }

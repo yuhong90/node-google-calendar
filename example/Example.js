@@ -19,6 +19,8 @@ function examples() {
 	// eventInstances(calendarIdList['primary'], '292t04careedrm9anhokgt01n4');
 	// moveEvent(calendarIdList['drone'], 'lceph271eedi1dpfvo639pc97o', calendarIdList['primary']);
 	// quickAddEvent(calendarIdList['primary'], 'Breakfast 9am - 11am');
+	// listSettings();
+	// getSettings('weekStart');
 }
 
 function listAllEventsInCalendar(calendarId) {
@@ -254,5 +256,28 @@ function checkBusy(calendarId, startDateTime, endDateTime) {
 		})
 		.catch(err => {
 			console.log('Error: checkBusy -' + err);
+		});
+}
+
+function getSettings(settingId) {
+	return cal.getSetting(settingId)
+		.then(resp => {
+			console.log('List settings with settingID: ' + settingId);
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: getSettings -' + err);
+		});
+}
+
+function listSettings() {
+	let params = {};
+	return cal.listSettings(params)
+		.then(resp => {
+			console.log('List settings: ');
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: listSettings -' + err);
 		});
 }
