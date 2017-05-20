@@ -3,7 +3,7 @@ Simple node module that supports Google Calendar Events API
 
 ## Preparations
 
-####Start Using Service Accounts
+#### Start Using Service Accounts
 This module does server to server authentication with Google APIs without any users being involved. 
 When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application. 
 
@@ -50,26 +50,28 @@ Update the settings.js config file with calendarId, calendarUrl, serviceAcctId &
 Your config file should look something like this:
 ```javascript
 const KEYFILE = '<yourpem.pem>';
-var SERVICE_ACCT_ID = '<your service account id>';
+const SERVICE_ACCT_ID = '<your service account id>';
 
 const CALENDAR_URL = '<your calendar url>';
-var CALENDAR_ID = {
+const CALENDAR_ID = {
   'primary': '',
   'calendar-1': 'calendar1@group.calendar.google.com',
   'calendar-2': 'calendar2@group.calendar.google.com'
 };
+const TIMEZONE = 'UTC+08:00';
 
-module.exports.calendarId = CALENDAR_ID;
-module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.keyfile = KEYFILE;       //or if using json keys - module.exports.key = key; 
 module.exports.calendarUrl = CALENDAR_URL;
+module.exports.serviceAcctId = SERVICE_ACCT_ID;
+module.exports.calendarId = CALENDAR_ID;
+module.exports.keyfile = KEYFILE;           //or if using json keys - module.exports.key = key; 
+module.exports.timezone = TIMEZONE;
 ```
 
 To use, require the module file in your project and pass in the settings file.
 
 ```javascript
-  const CalendarAPI = require('node-google-calendar');
   const CONFIG = require('./config/Settings');
+  const CalendarAPI = require('node-google-calendar');
   let cal = new CalendarAPI(CONFIG);  
 ```
 
@@ -78,65 +80,101 @@ You should now be able to query your specified calendar and try out the followin
 
 
 ## APIs
-[Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes list Events, insert Events, delete Event.
+[Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes APIs in resource types of [Events](https://developers.google.com/google-apps/calendar/v3/reference/events), [FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy) & [Settings](https://developers.google.com/google-apps/calendar/v3/reference/settings). Some examples are as follows:
 
-
-#####listEvents(calendarId, startDateTime, endDateTime, query)
-Returns a promise that lists all events in calendar between `startDateTime` & `endDateTime`.
-
-Example:
+### [Events](https://github.com/yuhong90/node-google-calendar/blob/master/src/Events.js) Examples 
+Events.list - To Get a promise of all single events in calendar within a time period.
 ```javascript
-  cal.listEvents(calendarId,"2016-04-28T08:00:00+08:00", "2016-04-28T12:00:00+08:00", "meeting").then(function(json){
+	let params = {
+		timeMin: '2017-05-20T06:00:00+08:00',
+		timeMax: '2017-05-25T22:00:00+08:00',
+		q: 'query term',
+		singleEvents: true,
+		orderBy: 'startTime'
+	};  //Optional query parameters referencing google APIs
+
+	cal.Events.list(calendarId, params)
+     .then(json => {
       //Success
-      console.log("list all events " );
-   }, function (json){
+			console.log('List of events on calendar within time-range:');
+			console.log(json);
+		}).catch(err => {
       //Error
-      console.log("list events error : " + json);
-   });
+			console.log('Error: listSingleEvents -' + err);
+		});
 ```
 
-#####insertEvent(calendarId, bookingSummary, startDateTime, endDateTime, location, status, description, colour)
-Insert an event on the user's primary calendar. Returns promise of details of booking.
-
-Example:
+Events.insert - Insert an event on a specified calendar. Returns promise of details of new event.
 ```javascript
-  cal.insertEvent(calendarId, "Lunch Meeting with Edison", "2016-05-23T12:00:00+08:00", "2016-05-23T13:00:00+08:00", 
-  "Open Pantry", "confirmed", "BYOF", 1).then(function(json){
-  		console.log('added event! : ' + JSON.stringify(json));
-  	}, function(){
-  		console.log('error : ' + JSON.stringify(json));
-  	});;
+	let event = {
+		'start': {
+			'dateTime': '2017-05-20T07:00:00+08:00'
+		},
+		'end': {
+			'dateTime': '2017-05-20T08:00:00+08:00'
+		},
+		'location': 'Coffeeshop',
+		'summary': 'Breakfast',
+		'status': 'confirmed',
+		'description': '',
+		'colorId': 1
+	};
+  
+  cal.Events.insert(calendarId, event)
+    .then(resp => {
+			console.log('inserted event:');
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: insertEvent-' + err);
+		});
 ```
 
-#####checkBusyPeriod(calendarId, startDateTime, endDateTime)
-Checks if queried calendar slot is busy during selected period. 
-Returns promise of list of events at specified slot. 
-
-Example:
+Events.delete - Deletes an Event on a specified Calendar with EventId. Returns promise of results. 
 ```javascript
-  cal.checkBusyPeriod(calendarId,"2016-05-23T10:00:00+08:00", "2016-05-23T11:00:00+08:00").then(function(eventsJson){ 
-    if (eventsJson != undefined && eventsJson.length > 0){
-      busyOrFree = 'busy';
-    }else{
-      busyOrFree = 'free';
-    }
-    console.log('slot is ' + busyOrFree);  
-  }, function(err){
-    console.log('error checkTimeslot' + err);
-  });
+	let params = {
+		sendNotifications: true
+	};
+  
+	cal.Events.delete(calendarId, eventId, params)
+    .then(function(jsonResults) {
+        console.log('delete Event:' + JSON.stringify(jsonResults));
+    }, function(err) {
+        console.log('Error deleteEvent: ' + JSON.stringify(err));
+    });
 ```
 
-#####deleteEvent(calendarId, eventId)
-Deletes an Event on Calendar with EventId.
-Returns promise of results. 
-
-Example:
+### [FreeBusy](https://github.com/yuhong90/node-google-calendar/blob/master/src/FreeBusy.js) Examples 
+FreeBusy.query - Checks if queried calendar slot is busy during selected period. Returns promise of list of events at specified slot. 
 ```javascript
-  cal.deleteEvent(calendarId,'vglrakdceu6jai4sm5lo5y3ah').then(function(jsonResults) {
-      console.log('delete Event:' + JSON.stringify(jsonResults));
-  }, function(err) {
-      console.log('Error deleteEvent: ' + JSON.stringify(err));
-  });
+  let params = {
+		"timeMin": '2017-05-20T08:00:00+08:00',
+		"timeMax": '2017-05-20T09:00:00+08:00',
+		"items": [{ "id": calendarId }]
+	};
+
+  cal.FreeBusy.query(calendarId, params)
+    .then(resp => {
+        console.log('List of busy timings with events within defined time range: ');
+        console.log(resp);
+      })
+      .catch(err => {
+        console.log('Error: checkBusy -' + err);
+      });
+```
+
+### [Settings](https://github.com/yuhong90/node-google-calendar/blob/master/src/Settings.js) Examples
+Settings.list - List user settings  
+```javascript
+  let params = {};
+  cal.Settings.list(params)
+		.then(resp => {
+			console.log('List settings with settingID: ' + settingId);
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: getSettings -' + err);
+		});
 ```
 
 More examples [here](https://github.com/yuhong90/node-google-calendar/blob/master/example/Example.js).
