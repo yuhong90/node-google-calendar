@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
-const requestWithJWT = Promise.promisify(require('google-oauth-jwt').requestWithJWT());
-const qs = require('querystring');
 const gcalBaseUrl = 'https://www.googleapis.com/calendar/v3/calendars/';
+const Request = require('./HttpRequest');
+let httpRequest = new Request();
 
 class CalendarAPI {
 
@@ -10,6 +10,7 @@ class CalendarAPI {
 			email: config.serviceAcctId,
 			scopes: ['https://www.googleapis.com/auth/calendar']
 		};
+
 		if (config.keyFile !== undefined) {			//for using pem key
 			this._JWT.keyFile = config.keyFile;
 		} else if (config.key !== undefined) {		//for using json key
@@ -32,85 +33,6 @@ class CalendarAPI {
 		};
 	}
 
-	_getRequest(calendarId, url, params, jwt) {
-		if (url === undefined) {
-			throw new Error('Missing argument; requst url needed');
-		} else if (params === undefined) {
-			throw new Error('Missing argument; query terms needed');
-		} else if (jwt === undefined) {
-			throw new Error('Missing argument; jwt needed');
-		}
-
-		let options = {
-			url: url,
-			jwt: jwt,
-			qs: params,
-			useQuerystring: true
-		};
-
-		return requestWithJWT(options);
-	}
-
-	_postRequest(calendarId, url, params, jwt) {
-		if (url === undefined) {
-			throw new Error('Missing argument; requst url needed');
-		} else if (params === undefined) {
-			throw new Error('Missing argument; query terms needed');
-		} else if (jwt === undefined) {
-			throw new Error('Missing argument; jwt needed');
-		}
-
-		let options = {
-			method: 'POST',
-			url: url,
-			jwt: jwt,
-			body: params,
-			json: true
-		};
-
-		return requestWithJWT(options);
-	}
-
-	_postRequestWithQueryString(calendarId, url, params, jwt) {
-		if (url === undefined) {
-			throw new Error('Missing argument; requst url needed');
-		} else if (params === undefined) {
-			throw new Error('Missing argument; query terms needed');
-		} else if (jwt === undefined) {
-			throw new Error('Missing argument; jwt needed');
-		}
-
-		let options = {
-			method: 'POST',
-			url: url,
-			jwt: jwt,
-			qs: params,
-			json: true
-		};
-		return requestWithJWT(options);
-	}
-
-	_putRequest(calendarId, url, params, jwt) {
-		if (url === undefined) {
-			throw new Error('Missing argument; requst url needed');
-		} else if (params === undefined) {
-			throw new Error('Missing argument; query terms needed');
-		} else if (jwt === undefined) {
-			throw new Error('Missing argument; jwt needed');
-		}
-
-		let options = {
-			method: 'PUT',
-			url: url,
-			jwt: jwt,
-			body: params,
-			json: true
-		};
-
-		return requestWithJWT(options);
-	}
-
-
 	/** Returns a promise that list all events on calendar during selected period
 	 * 
 	 * @param {string} calendarId 					- Calendar identifier
@@ -121,7 +43,7 @@ class CalendarAPI {
 	listEvents(calendarId, params) {
 		this._checkCalendarId(calendarId, 'listEvents');
 
-		return this._getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events`, params, this._JWT)
+		return httpRequest.getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				let body = JSON.parse(resp.body);
@@ -141,7 +63,7 @@ class CalendarAPI {
 	getEvent(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'GetEvent');
 
-		return this._getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+		return httpRequest.getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				let body = JSON.parse(resp.body);
@@ -159,7 +81,7 @@ class CalendarAPI {
 	quickAddEvent(calendarId, params) {
 		this._checkCalendarId(calendarId, 'QuickAddEvent');
 
-		return this._postRequestWithQueryString(calendarId, `${gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
+		return httpRequest.postRequestWithQueryString(calendarId, `${gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body;
@@ -184,7 +106,7 @@ class CalendarAPI {
 	insertEvent(calendarId, params) {
 		this._checkCalendarId(calendarId, 'insertEvent');
 
-		return this._postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events`, params, this._JWT)
+		return httpRequest.postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body;
@@ -202,7 +124,7 @@ class CalendarAPI {
 	updateEvent(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'UpdateEvent');
 
-		return this._putRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+		return httpRequest.putRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body;
@@ -223,14 +145,8 @@ class CalendarAPI {
 		if (eventId === undefined) {
 			throw new Error('deleteEvent: Missing eventId argument');
 		}
-		let options = {
-			method: 'DELETE',
-			url: `${gcalBaseUrl}${calendarId}/events/${eventId}`,
-			jwt: this._JWT,
-			qs: params
-		};
 
-		return requestWithJWT(options)
+		return httpRequest.deleteRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body);
 				let status = resp.statusCode;
@@ -249,7 +165,7 @@ class CalendarAPI {
 	eventInstances(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'EventInstances');
 
-		return this._getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
+		return httpRequest.getRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				let body = JSON.parse(resp.body);
@@ -273,7 +189,7 @@ class CalendarAPI {
 			throw new Error('moveEvent: Missing destination CalendarId argument');
 		}
 
-		return this._postRequestWithQueryString(calendarId, `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
+		return httpRequest.postRequestWithQueryString(calendarId, `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body;
@@ -290,7 +206,7 @@ class CalendarAPI {
 	watchEvent(calendarId, params) {
 		this._checkCalendarId(calendarId, 'WatchEvent');
 
-		return this._postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
+		return httpRequest.postRequest(calendarId, `${gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body;
@@ -300,7 +216,7 @@ class CalendarAPI {
 			});
 	}
 
-	/** Checks when queried calendar is busy/ during selected time range.
+	/** Checks when queried calendar is busy during selected time range.
 	 *  Returns promise of list of start and end timings that are busy with time range.
 	 *
 	 * @param {string} calendarId		- Calendar identifier
@@ -315,7 +231,7 @@ class CalendarAPI {
 			params.timeZone = this._TIMEZONE;
 		}
 
-		return this._postRequest(calendarId, 'https://www.googleapis.com/calendar/v3/freeBusy', params, this._JWT)
+		return httpRequest.postRequest(calendarId, 'https://www.googleapis.com/calendar/v3/freeBusy', params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				return resp.body.calendars[calendarId].busy;
@@ -326,7 +242,7 @@ class CalendarAPI {
 	}
 
 	getSetting(settingId) {
-		return this._getRequest('', `https://www.googleapis.com/calendar/v3/users/me/settings/${settingId}`, '', this._JWT)
+		return httpRequest.getRequest('', `https://www.googleapis.com/calendar/v3/users/me/settings/${settingId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				let body = JSON.parse(resp.body);
@@ -338,7 +254,7 @@ class CalendarAPI {
 	}
 
 	listSettings(params) {
-		return this._getRequest('', 'https://www.googleapis.com/calendar/v3/users/me/settings', params, this._JWT)
+		return httpRequest.getRequest('', 'https://www.googleapis.com/calendar/v3/users/me/settings', params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
 				let body = JSON.parse(resp.body);
