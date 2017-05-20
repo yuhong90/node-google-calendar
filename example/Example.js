@@ -2,26 +2,28 @@
 const CALENDAR_URL = require('../config/Local-Settings').calendarUrl;
 const CONFIG = require('../config/Local-Settings');
 const CalendarAPI = require('../src/CalendarAPI');
-let cal = new CalendarAPI(CONFIG);
-let calendarIdList = CONFIG.calendarId;
+const cal = new CalendarAPI(CONFIG);
+const calendarIdList = CONFIG.calendarId;
 
 examples();
 
 function examples() {
-	// listSingleEventsWithinDateRange(calendarIdList['primary'], '2017-05-20T08:00:00+08:00', '2017-05-25T21:00:00+08:00', 'Drone');
 	// listAllEventsInCalendar(calendarIdList['primary']);
-	// insertEvent(calendarIdList['primary'], 'TestEventName', '2017-05-20T12:00:00+08:00', '2017-05-20T15:00:00+08:00', 'drone', 'confirmed', 'some description here');
-	// insertRecurringEvent(calendarIdList['primary'], 'TestRecurringEvent', '2017-05-20T10:00:00+08:00', '2017-05-20T11:00:00+08:00', 'drone', 'confirmed', 'description', ['RRULE:FREQ=WEEKLY;COUNT=3'])
-	// updateEvent(calendarIdList['primary'], 'algjb8m5jdjcgmptc3dqbcg3fc', 'Breakfast Event', '2017-05-20T08:30:00+08:00', '2017-05-20T11:00:00+08:00', '', 'confirmed', 'some descriptions here');
-	// deleteEvent(calendarIdList['primary'], '55irsedboducf35hs7obggq2s8');
-	// getEvent(calendarIdList['primary'], 'algjb8m5jdjcgmptc3dqbcg3fc');
-	// eventInstances(calendarIdList['primary'], '04fl5s82f98ccgp5dmba3132m0');
-	// moveEvent(calendarIdList['primary'], '04fl5s82f98ccgp5dmba3132m0', calendarIdList['drone']);
+	// listSingleEventsWithinDateRange(calendarIdList['primary'], '2017-05-20T06:00:00+08:00', '2017-05-25T22:00:00+08:00', '');
+	// listRecurringEventsWithinDateRange(calendarIdList['drone'], '2017-05-20T06:00:00+08:00', '2017-05-20T22:00:00+08:00', '');
+	// insertEvent(calendarIdList['primary'], 'TestEventName', '2017-05-20T12:00:00+08:00', '2017-05-20T15:00:00+08:00', 'location', 'confirmed', 'some description here');
+	// insertRecurringEvent(calendarIdList['primary'], 'TestRecurringEvent', '2017-05-20T10:00:00+08:00', '2017-05-20T11:00:00+08:00', 'location', 'confirmed', 'description', ['RRULE:FREQ=WEEKLY;COUNT=3'])
 	// quickAddEvent(calendarIdList['primary'], 'Breakfast 9am - 11am');
+	// getEvent(calendarIdList['primary'], 'algjb8m5jdjcgmptc3dqbcg3fc');
+	// eventInstances(calendarIdList['drone'], '04fl5s82f98ccgp5dmba3132m0');
+	// updateEvent(calendarIdList['primary'], 'algjb8m5jdjcgmptc3dqbcg3fc', 'BreakfastEvent', '2017-05-20T08:30:00+08:00', '2017-05-20T11:00:00+08:00', '', 'confirmed', 'some descriptions here');
+	// moveEvent(calendarIdList['primary'], '04fl5s82f98ccgp5dmba3132m0', calendarIdList['drone']);
+	// deleteEvent(calendarIdList['drone'], '04fl5s82f98ccgp5dmba3132m0');
 	
 	// listSettings();
 	// getSettings('weekStart');
-	// checkBusy(calendarIdList['primary'], '2017-05-14T09:00:00+08:00', '2017-05-14T21:00:00+08:00');
+
+	// checkBusy(calendarIdList['primary'], '2017-05-20T09:00:00+08:00', '2017-05-20T21:00:00+08:00');
 }
 
 function listAllEventsInCalendar(calendarId) {
@@ -75,7 +77,38 @@ function listSingleEventsWithinDateRange(calendarId, startDateTime, endDateTime,
 			console.log(eventsArray);
 
 		}).catch(err => {
-			console.log('Error: listBookedEvent -' + err);
+			console.log('Error: listSingleEventsWithinDateRange -' + err);
+		});
+}
+
+function listRecurringEventsWithinDateRange(calendarId, startDateTime, endDateTime, query) {
+	let eventsArray = [];
+	let params = {
+		timeMin: startDateTime,
+		timeMax: endDateTime,
+		q: query,
+		singleEvents: false
+	}
+
+	cal.Events.list(calendarId, params)
+		.then(json => {
+			for (let i = 0; i < json.length; i++) {
+				let event = {
+					id: json[i].id,
+					summary: json[i].summary,
+					location: json[i].location,
+					start: json[i].start,
+					end: json[i].end,
+					status: json[i].status
+				};
+				eventsArray.push(event);
+			}
+
+			console.log('List of recurring events on calendar within time-range:');
+			console.log(eventsArray);
+
+		}).catch(err => {
+			console.log('Error: listRecurringEventsWithinDateRange -' + err);
 		});
 }
 
@@ -92,33 +125,6 @@ function quickAddEvent(calendarId, text) {
 		})
 		.catch(err => {
 			console.log('Error: quickAddEvent-' + err);
-		});
-}
-
-function deleteEvent(calendarId, eventId) {
-	let params = {
-		sendNotifications: true
-	};
-	return cal.Events.delete(calendarId, eventId, params)
-		.then(resp => {
-			console.log('Deleted Event Response: ');
-			console.log(resp);
-		})
-		.catch(err => {
-			console.log('Error: deleteEvent-' + err);
-		});
-}
-
-function getEvent(calendarId, eventId) {
-	let params = {};
-
-	return cal.Events.get(calendarId, eventId, params)
-		.then(resp => {
-			console.log('GetEvent: ' + eventId);
-			console.log(resp);
-		})
-		.catch(err => {
-			console.log('Error: getEvent-' + err);
 		});
 }
 
@@ -187,6 +193,33 @@ function insertRecurringEvent(calendarId, eventSummary, startDateTime, endDateTi
 		});
 }
 
+function deleteEvent(calendarId, eventId) {
+	let params = {
+		sendNotifications: true
+	};
+	return cal.Events.delete(calendarId, eventId, params)
+		.then(resp => {
+			console.log('Deleted Event Response: ');
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: deleteEvent-' + err);
+		});
+}
+
+function getEvent(calendarId, eventId) {
+	let params = {};
+
+	return cal.Events.get(calendarId, eventId, params)
+		.then(resp => {
+			console.log('GetEvent: ' + eventId);
+			console.log(resp);
+		})
+		.catch(err => {
+			console.log('Error: getEvent-' + err);
+		});
+}
+
 function updateEvent(calendarId, eventId, eventSummary, startDateTime, endDateTime, location, status, description, recurrenceRule) {
 	let event = {
 		'start': {
@@ -249,7 +282,7 @@ function checkBusy(calendarId, startDateTime, endDateTime) {
 		"items": [{ "id": calendarId }]
 	};
 
-	return cal.checkBusy(calendarId, params)
+	return cal.FreeBusy.query(calendarId, params)
 		.then(resp => {
 			console.log('List of busy timings with events on calendar within defined time range: ' + startDateTime + ' - ' + endDateTime);
 			console.log(resp);
@@ -260,7 +293,7 @@ function checkBusy(calendarId, startDateTime, endDateTime) {
 }
 
 function getSettings(settingId) {
-	return cal.getSetting(settingId)
+	return cal.Settings.get(settingId)
 		.then(resp => {
 			console.log('List settings with settingID: ' + settingId);
 			console.log(resp);
@@ -272,7 +305,7 @@ function getSettings(settingId) {
 
 function listSettings() {
 	let params = {};
-	return cal.listSettings(params)
+	return cal.Settings.list(params)
 		.then(resp => {
 			console.log('List settings: ');
 			console.log(resp);
