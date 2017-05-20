@@ -13,7 +13,7 @@ class HttpRequest {
 		}
 	}
 
-	getRequest(calendarId, url, params, jwt) {
+	get(calendarId, url, params, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -26,7 +26,7 @@ class HttpRequest {
 		return requestWithJWT(options);
 	}
 
-	postRequest(calendarId, url, params, jwt) {
+	post(calendarId, url, params, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -40,7 +40,7 @@ class HttpRequest {
 		return requestWithJWT(options);
 	}
 
-	postRequestWithQueryString(calendarId, url, params, jwt) {
+	postWithQueryString(calendarId, url, params, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -50,11 +50,11 @@ class HttpRequest {
 			qs: params,
 			json: true
 		};
-		
+
 		return requestWithJWT(options);
 	}
 
-	putRequest(calendarId, url, params, jwt) {
+	put(calendarId, url, params, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -68,7 +68,7 @@ class HttpRequest {
 		return requestWithJWT(options);
 	}
 
-	_deleteRequest(calendarId, url, params, jwt) {
+	delete(calendarId, url, params, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
