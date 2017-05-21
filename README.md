@@ -1,73 +1,38 @@
 # node-google-calendar
 Simple node module that supports Google Calendar Events API
 
-## Preparations
-
-#### Start Using Service Accounts
 This module does server to server authentication with Google APIs without any users being involved. 
-When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application. 
+When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application.    
 
-1. Create a service account if you dont have one. For more information about service accounts and server-to-server interactions such as those between a web application and a Google service: https://developers.google.com/identity/protocols/OAuth2ServiceAccount#authorizingrequests
-
-2. A public/private key pair is generated for the service account, which is created from the Google API console. Take note of the service account's email address and store the service account's json or P12 private key file in a location accessible to your application. Your application needs them to make authorized API calls.
-
-3. If a user wants to give access to his Google Calendar to your application, he must give specific permission for each of the calenders to the created Service Account using the supplied email address under the Google Calendar settings.
-
-4. Create a `settings.js` file with the google account email address under USERID and the generated service account id as SERVICE_ACCT_ID. Reference to sample settings file [here](https://github.com/yuhong90/node-google-calendar/blob/master/config/Settings.js). 
-
-5. Update `settings.js` and specify IDs of each calendar that the service account has been granted access to. 
-
-
-#### Providing key or keyfile for Google OAuth 
-
-__To use the PEM keyfile__
-Convert the downloaded .p12 key to PEM.
-
-To do this, run the following in Terminal:
-
-`openssl pkcs12 -in downloaded-key-file.p12 -out converted-key-file.pem -nodes`
-
-Once done, export the keyfile var in `settings.js`.
-
-__To use the JSON key__
-Read the json key's private key and export the key var in `settings.js`.
-
-To do that, add the following code in your `settings.js`.
-```javascript
-var fs = require('fs');
-const KEYPATH = '../json-googleapi-key';
-var json = fs.readFileSync(KEYPATH, 'utf8');
-var key = JSON.parse(json).private_key;
-module.exports.key = key;
-```
+Find out more about [preparations needed](https://github.com/yuhong90/node-google-calendar/wiki#preparations-needed) to setting up the [service account](https://github.com/yuhong90/node-google-calendar/wiki#setup-service-accounts), grant calendar access, [auth key to google](https://github.com/yuhong90/node-google-calendar/wiki#providing-key-or-keyfile-for-google-oauth) and the configurations needed to start using node-google-calendar.
+   
+   
 
 ## Getting Started
 
 First, install the package with: `npm i node-google-calendar`.
 
-Update the settings.js config file with calendarId, calendarUrl, serviceAcctId & keyfile location.
+Provide in the `settings.js` config file with serviceAcctId, calendarIds, timezone & keyfile location.   
+Check out [preparations needed](https://github.com/yuhong90/node-google-calendar/wiki#preparations-needed) if you have trouble supplying these configurations. Sample config file [here](https://github.com/yuhong90/node-google-calendar/blob/master/config/Settings.js).   
 
 Your config file should look something like this:
 ```javascript
-const KEYFILE = '<yourpem.pem>';
 const SERVICE_ACCT_ID = '<your service account id>';
-
-const CALENDAR_URL = '<your calendar url>';
 const CALENDAR_ID = {
   'primary': '',
   'calendar-1': 'calendar1@group.calendar.google.com',
   'calendar-2': 'calendar2@group.calendar.google.com'
 };
 const TIMEZONE = 'UTC+08:00';
+const KEYFILE = '<yourpem.pem>';
 
-module.exports.calendarUrl = CALENDAR_URL;
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
 module.exports.calendarId = CALENDAR_ID;
 module.exports.keyfile = KEYFILE;           //or if using json keys - module.exports.key = key; 
 module.exports.timezone = TIMEZONE;
 ```
 
-To use, require the module file in your project and pass in the settings file.
+To use, require this module in your project and pass in the configurations file.
 
 ```javascript
   const CONFIG = require('./config/Settings');
@@ -75,7 +40,7 @@ To use, require the module file in your project and pass in the settings file.
   let cal = new CalendarAPI(CONFIG);  
 ```
 
-You should now be able to query your specified calendar and try out the following examples. 
+You should now be able to query your specified calendar and try out the following examples.   
 
 
 
