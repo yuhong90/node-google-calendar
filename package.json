@@ -4,12 +4,16 @@
   "description": "Simple node module that supports Google Calendar Events API",
   "main": "./src/CalendarAPI.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
     "google-oauth-jwt": "^0.2.0",
     "request-promise": "^4.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
   },
   "repository": {
     "type": "git",
