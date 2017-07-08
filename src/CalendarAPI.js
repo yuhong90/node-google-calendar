@@ -13,6 +13,10 @@ const freebusyUrl = `${gcalBaseUrl}freeBusy`;
 class CalendarAPI {
 
 	constructor(config) {
+		if (config === undefined) {
+			throw new Error('Missing configuration parameters in constructor');
+		}
+
 		this._JWT = {
 			email: config.serviceAcctId,
 			scopes: ['https://www.googleapis.com/auth/calendar']

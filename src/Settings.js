@@ -23,11 +23,11 @@ class Settings {
 		return this._httpRequest.get('', `${this._settingBaseUrl}${settingId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				let body = JSON.parse(resp.body);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Settings::list: ' + err);
+				throw new Error('Settings::get: ' + err);
 			});
 	}
 
@@ -35,7 +35,7 @@ class Settings {
 		return this._httpRequest.get('', `${this._settingBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				let body = JSON.parse(resp.body);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			})
 			.catch(err => {

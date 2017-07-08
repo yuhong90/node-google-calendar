@@ -1,6 +1,9 @@
 class Events {
 
 	constructor(httpRequest, jwt, gcalBaseUrl) {
+		if (httpRequest === undefined || jwt === undefined || gcalBaseUrl === undefined) {
+			throw new Error('Events constructor: Missing arguments');
+		}
 		this._httpRequest = httpRequest;
 		this._JWT = jwt;
 		this._gcalBaseUrl = gcalBaseUrl;
@@ -54,7 +57,7 @@ class Events {
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				let body = JSON.parse(resp.body);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			}).catch(err => {
 				throw new Error('Events::get: ' + err);
@@ -96,7 +99,7 @@ class Events {
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				let body = JSON.parse(resp.body);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			})
 			.catch(err => {
@@ -117,7 +120,7 @@ class Events {
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				let body = JSON.parse(resp.body);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			}).catch(err => {
 				throw new Error('Events::list: ' + err);

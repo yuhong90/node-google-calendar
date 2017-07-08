@@ -8,7 +8,7 @@ const calendarIdList = CONFIG.calendarId;
 examples();
 
 function examples() {
-	// listAllEventsInCalendar(calendarIdList['primary']);
+	listAllEventsInCalendar(calendarIdList['bb']);
 	// listSingleEventsWithinDateRange(calendarIdList['primary'], '2017-05-20T06:00:00+08:00', '2017-05-25T22:00:00+08:00', '');
 	// listRecurringEventsWithinDateRange(calendarIdList['drone'], '2017-05-20T06:00:00+08:00', '2017-05-20T22:00:00+08:00', '');
 	// insertEvent(calendarIdList['primary'], 'TestEventName', '2017-05-20T12:00:00+08:00', '2017-05-20T15:00:00+08:00', 'location', 'confirmed', 'some description here');
@@ -18,8 +18,8 @@ function examples() {
 	// eventInstances(calendarIdList['drone'], '04fl5s82f98ccgp5dmba3132m0');
 	// updateEvent(calendarIdList['primary'], 'algjb8m5jdjcgmptc3dqbcg3fc', 'BreakfastEvent', '2017-05-20T08:30:00+08:00', '2017-05-20T11:00:00+08:00', '', 'confirmed', 'some descriptions here');
 	// moveEvent(calendarIdList['primary'], '04fl5s82f98ccgp5dmba3132m0', calendarIdList['drone']);
-	// deleteEvent(calendarIdList['drone'], '04fl5s82f98ccgp5dmba3132m0');
-	
+	// deleteEvent(calendarIdList['primary'], 'upnbq496e7k8l2fmctnph9jius');
+
 	// listSettings();
 	// getSettings('weekStart');
 
