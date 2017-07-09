@@ -1,4 +1,7 @@
 # node-google-calendar
+[![Build Status](https://travis-ci.org/yuhong90/node-google-calendar.svg?branch=master)](https://travis-ci.org/yuhong90/node-google-calendar)
+
+
 Simple node module that supports Google Calendar Events API
 
 This module does server to server authentication with Google APIs without any users being involved. 
@@ -18,18 +21,18 @@ Check out [preparations needed](https://github.com/yuhong90/node-google-calendar
 Your config file should look something like this:
 ```javascript
 const SERVICE_ACCT_ID = '<your service account id>';
+const KEYFILE = '<yourpem.pem>';
+const TIMEZONE = 'UTC+08:00';
 const CALENDAR_ID = {
   'primary': '',
   'calendar-1': 'calendar1@group.calendar.google.com',
   'calendar-2': 'calendar2@group.calendar.google.com'
 };
-const TIMEZONE = 'UTC+08:00';
-const KEYFILE = '<yourpem.pem>';
 
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.calendarId = CALENDAR_ID;
-module.exports.keyfile = KEYFILE;           //or if using json keys - module.exports.key = key; 
+module.exports.keyfile = KEYFILE;           	//or if using json keys -> module.exports.key = key; 
 module.exports.timezone = TIMEZONE;
+module.exports.calendarId = CALENDAR_ID;
 ```
 
 To use, require this module in your project and pass in the configurations file.
@@ -41,7 +44,6 @@ To use, require this module in your project and pass in the configurations file.
 ```
 
 You should now be able to query your specified calendar and try out the following examples.   
-
 
 
 ## APIs
