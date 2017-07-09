@@ -15,9 +15,10 @@ class Events {
 		}
 	}
 
-	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
+	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
-			throw new Error('Resp StatusCode ' + actualStatusCode + ':\n' + JSON.stringify(resp));
+			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
+			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\n' + JSON.stringify(respBody));
 		};
 	}
 
@@ -35,7 +36,7 @@ class Events {
 
 		return this._httpRequest.delete(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(204, resp.statusCode, resp.body);
+				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				let status = resp.statusCode;
 				return { statusCode: status, message: 'Event delete success' };
 			})
@@ -56,7 +57,7 @@ class Events {
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			}).catch(err => {
@@ -80,8 +81,9 @@ class Events {
 
 		return this._httpRequest.post(calendarId, `${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return resp.body;
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
 			})
 			.catch(err => {
 				throw new Error('Events::insert: ' + err);
@@ -98,7 +100,7 @@ class Events {
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			})
@@ -119,7 +121,7 @@ class Events {
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			}).catch(err => {
@@ -142,8 +144,9 @@ class Events {
 
 		return this._httpRequest.postWithQueryString(calendarId, `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return resp.body;
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
 			})
 			.catch(err => {
 				throw new Error('Events::move: ' + err);
@@ -160,8 +163,9 @@ class Events {
 
 		return this._httpRequest.postWithQueryString(calendarId, `${this._gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return resp.body;
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
 			})
 			.catch(err => {
 				throw new Error('Events::quickAdd: ' + err);
@@ -178,8 +182,9 @@ class Events {
 
 		return this._httpRequest.put(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return resp.body;
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
 			})
 			.catch(err => {
 				throw new Error('Events::update: ' + err);
@@ -195,8 +200,9 @@ class Events {
 
 		return this._httpRequest.post(calendarId, `${this._gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
-				return resp.body;
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
 			})
 			.catch(err => {
 				throw new Error('Events::watch: ' + err);
