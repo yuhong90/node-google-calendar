@@ -18,7 +18,7 @@ class Events {
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
-			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\n' + JSON.stringify(respBody));
+			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
 		};
 	}
 
@@ -31,7 +31,7 @@ class Events {
 	delete(calendarId, eventId, params) {
 		this._checkCalendarId(calendarId, 'DeleteEvent');
 		if (eventId === undefined) {
-			throw new Error('deleteEvent: Missing eventId argument');
+			throw new Error('Events.delete: Missing eventId argument');
 		}
 
 		return this._httpRequest.delete(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
@@ -41,7 +41,7 @@ class Events {
 				return { statusCode: status, message: 'Event delete success' };
 			})
 			.catch(err => {
-				throw new Error('Events::delete: ' + err);
+				throw new Error('Events.delete ' + err);
 			});
 	}
 
@@ -61,7 +61,7 @@ class Events {
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			}).catch(err => {
-				throw new Error('Events::get: ' + err);
+				throw new Error('Events.get ' + err);
 			});
 	}
 
@@ -86,7 +86,7 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events::insert: ' + err);
+				throw new Error('Events.insert ' + err);
 			});
 	}
 
@@ -105,7 +105,7 @@ class Events {
 				return body.items;
 			})
 			.catch(err => {
-				throw new Error('Events::instances: ' + err);
+				throw new Error('Events.instances ' + err);
 			});
 	}
 
@@ -125,7 +125,7 @@ class Events {
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			}).catch(err => {
-				throw new Error('Events::list: ' + err);
+				throw new Error('Events.list ' + err);
 			});
 	}
 
@@ -149,7 +149,7 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events::move: ' + err);
+				throw new Error('Events.move ' + err);
 			});
 	}
 
@@ -168,7 +168,7 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events::quickAdd: ' + err);
+				throw new Error('Events.quickAdd ' + err);
 			});
 	}
 
@@ -187,7 +187,7 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events::update: ' + err);
+				throw new Error('Events.update ' + err);
 			});
 	}
 
@@ -205,7 +205,7 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events::watch: ' + err);
+				throw new Error('Events.watch ' + err);
 			});
 	}
 }

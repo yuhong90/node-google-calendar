@@ -1,6 +1,9 @@
 class FreeBusy {
 
 	constructor(httpRequest, jwt, BaseUrl, timezone) {
+		if (httpRequest === undefined || jwt === undefined || BaseUrl === undefined || timezone === undefined) {
+			throw new Error('FreeBusy constructor: Missing arguments');
+		}
 		this._httpRequest = httpRequest;
 		this._JWT = jwt;
 		this._BaseUrl = BaseUrl;
@@ -15,7 +18,7 @@ class FreeBusy {
 
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
 		if (actualStatusCode !== expectedStatusCode) {
-			throw new Error('Resp StatusCode ' + actualStatusCode + ':\n' + JSON.stringify(resp));
+			throw new Error('Resp StatusCode ' + actualStatusCode + ':\nerrorBody:' + JSON.stringify(resp));
 		};
 	}
 
@@ -36,11 +39,11 @@ class FreeBusy {
 
 		return this._httpRequest.post(calendarId, this._BaseUrl, params, this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body);
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				return resp.body.calendars[calendarId].busy;
 			})
 			.catch(err => {
-				throw new Error('FreeBusy::query: ' + err);
+				throw new Error('FreeBusy.query ' + err);
 			});
 	}
 }

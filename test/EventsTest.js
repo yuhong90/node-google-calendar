@@ -27,13 +27,38 @@ describe('Events.js', function () {
 		events = require('../src/Events');
 	});
 
-	it('Should return error if missing arguements when calling constructor', () => {
+	it('Should return error if missing arguments when calling constructor', () => {
 		try {
 			let eventsInstance = new events();
 		} catch (err) {
 			const expectError = new Error('Events constructor: Missing arguments');
 			expect(err.message).to.eql(expectError.message);
 		}
+	});
+
+	it('Should return error when http response returns non-200 error code during Events.list', () => {
+		let mockResponse = {
+			statusCode: 400,
+			statusMessage: 'Not Found',
+			body: {
+				error: {
+					errors: [{ domain: 'global', reason: 'notFound', message: 'Not Found' }],
+					code: 404,
+					message: 'Not Found'
+				}
+			}
+		};
+
+		let mockHttpRequest = {
+			get: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = new Error('Events.list Error: Resp StatusCode ' + mockResponse.statusCode + '(' + mockResponse.statusMessage + '):\nerrorBody:' + JSON.stringify(mockResponse.body));
+
+		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
+		return eventsInstance.list('calendarid', {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
+			});
 	});
 
 	it('Should return items in http response body when Events.list', () => {
