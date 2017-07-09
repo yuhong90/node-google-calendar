@@ -4,7 +4,8 @@
 	"description": "Simple node module that supports Google Calendar Events API",
 	"main": "./src/CalendarAPI.js",
 	"scripts": {
-		"test": "mocha -w"
+		"test": "mocha",
+		"test watch": "mocha -w"
 	},
 	"dependencies": {
 		"bluebird": "^3.4.1",
