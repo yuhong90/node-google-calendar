@@ -16,7 +16,7 @@ Find out more about [preparations needed](https://github.com/yuhong90/node-googl
 
 First, install the package with: `npm i node-google-calendar --save`.
 
-Provide in the `settings.js` config file with serviceAcctId, calendarIds, timezone & keyfile location.   
+Provide in a `settings.js` config file with serviceAcctId, calendarIds, timezone & keyfile location.   
 Check out [preparations needed](https://github.com/yuhong90/node-google-calendar/wiki#preparations-needed) if you have trouble supplying these configurations. Sample config file [here](https://github.com/yuhong90/node-google-calendar/blob/master/config/Settings.js).   
 
 Your config file should look something like this:
