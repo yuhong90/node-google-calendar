@@ -14,7 +14,7 @@ Find out more about [preparations needed](https://github.com/yuhong90/node-googl
 
 ## Getting Started
 
-First, install the package with: `npm i node-google-calendar --save`.
+First, install the [npm package](https://www.npmjs.com/package/node-google-calendar) with: `npm i node-google-calendar --save`.
 
 Provide in a `settings.js` config file with serviceAcctId, calendarIds, timezone & keyfile location.   
 Check out [preparations needed](https://github.com/yuhong90/node-google-calendar/wiki#preparations-needed) if you have trouble supplying these configurations. Sample config file [here](https://github.com/yuhong90/node-google-calendar/blob/master/config/Settings.js).   
@@ -74,7 +74,7 @@ cal.Events.list(calendarId, params)
 
 Events.insert - Insert an event on a specified calendar. Returns promise of details of new event.
 ```javascript
-let event = {
+let params = {
 	'start': { 'dateTime': '2017-05-20T07:00:00+08:00' },
 	'end': { 'dateTime': '2017-05-20T08:00:00+08:00' },
 	'location': 'Coffeeshop',
@@ -84,7 +84,7 @@ let event = {
 	'colorId': 1
 };
 
-cal.Events.insert(calendarId, event)
+cal.Events.insert(calendarId, params)
   .then(resp => {
 	console.log('inserted event:');
 	console.log(resp);
