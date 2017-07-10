@@ -1,6 +1,6 @@
 // Sample CalendarAPI settings
 const SERVICE_ACCT_ID = '...@...iam.gserviceaccount.com';
-const KEYFILE = 'googleapi-keyfile.pem';				//path to pem key
+const KEYFILE = 'your-google-api-keyfile.pem';				//path to pem key
 const TIMEZONE = 'UTC+08:00';
 const CALENDAR_ID = {
 	'primary': '',

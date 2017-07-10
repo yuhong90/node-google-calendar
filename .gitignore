@@ -1,5 +1,7 @@
 *.pem
 *.log
+*.snyk
 .npmignore
 config
 node_modules
+keys
