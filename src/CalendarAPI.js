@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const calEvents = require('./Events');
 const calSettings = require('./Settings');
 const calFreeBusy = require('./FreeBusy');
