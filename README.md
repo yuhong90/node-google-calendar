@@ -1,5 +1,6 @@
 # node-google-calendar
 [![Build Status](https://travis-ci.org/yuhong90/node-google-calendar.svg?branch=master)](https://travis-ci.org/yuhong90/node-google-calendar)
+[![Known Vulnerabilities](https://snyk.io/test/github/yuhong90/node-google-calendar/badge.svg)](https://snyk.io/test/github/yuhong90/node-google-calendar)
 
 
 Simple node module that supports Google Calendar Events API
