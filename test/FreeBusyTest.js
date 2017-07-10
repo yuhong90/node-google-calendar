@@ -1,6 +1,6 @@
+let sinon = require('sinon');
 let chai = require('chai');
 let expect = chai.expect;
-let sinon = require('sinon');
 
 describe('FreeBusy.js', function () {
 	let freebusy;

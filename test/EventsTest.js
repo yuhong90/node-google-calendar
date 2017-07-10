@@ -1,6 +1,7 @@
+let sinon = require('sinon');
 let chai = require('chai');
 let expect = chai.expect;
-let sinon = require('sinon');
+
 
 describe('Events.js', function () {
 	let events;
@@ -34,6 +35,37 @@ describe('Events.js', function () {
 			const expectError = new Error('Events constructor: Missing arguments');
 			expect(err.message).to.eql(expectError.message);
 		}
+	});
+
+	it('Should return error when calling Events.list with missing calendarId argument', () => {
+		let expectedResult = new Error('Events.list: Missing calendarId argument; Check if defined in params and Settings file');
+
+		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
+		return eventsInstance.list(undefined, {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
+			});
+	});
+
+	it('Should return error when calling Events.get with missing calendarId argument', () => {
+		let expectedResult = new Error('Events.get: Missing calendarId argument; Check if defined in params and Settings file');
+
+		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
+		return eventsInstance.get(undefined, {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
+			});
+	});
+
+
+	it('Should return error when calling Events.get with missing eventId argument', () => {
+		let expectedResult = new Error('Events.get: Missing eventId argument');
+
+		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
+		return eventsInstance.get('calendarId', undefined, {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
+			});
 	});
 
 	it('Should return error when http response returns non-200 error code during Events.list', () => {
@@ -193,6 +225,16 @@ describe('Events.js', function () {
 		return eventsInstance.move('calendarid', 'eventId', params)
 			.then((results) => {
 				expect(expectedResult).to.eql(results);
+			});
+	});
+
+	it('Should return error when calling Events.move with missing destination CalendarId argument', () => {
+		let expectedResult = new Error('Events.move: Missing destination CalendarId argument');
+
+		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
+		return eventsInstance.move('calendarId', 'eventid', {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
 			});
 	});
 

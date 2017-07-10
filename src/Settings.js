@@ -10,12 +10,6 @@ class Settings {
 		this._settingBaseUrl = settingBaseUrl;
 	}
 
-	_checkCalendarId(calendarId, errorOrigin) {
-		if (calendarId === undefined || calendarId == '') {
-			throw new Error(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
-		}
-	}
-
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';

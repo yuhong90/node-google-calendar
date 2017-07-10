@@ -9,9 +9,25 @@ class Events {
 		this._gcalBaseUrl = gcalBaseUrl;
 	}
 
+	_returnPromiseWithError(errorMsg) {
+		return new Promise((resolve, reject) => {
+			let err = new Error(errorMsg);
+			reject(err);
+		});
+	}
+
 	_checkCalendarId(calendarId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			throw new Error(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+		}
+	}
+
+	_checkCalendarAndEventId(calendarId, eventId, errorOrigin) {
+		if (calendarId === undefined || calendarId == '') {
+			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+		}
+		if (undefined === eventId) {
+			return this._returnPromiseWithError(errorOrigin + ': Missing eventId argument');
 		}
 	}
 
@@ -29,9 +45,9 @@ class Events {
 	 * @param {bool} params.sendNotifications (optional) 	- Whether to send notifications about the deletion of the event.
 	 */
 	delete(calendarId, eventId, params) {
-		this._checkCalendarId(calendarId, 'DeleteEvent');
-		if (eventId === undefined) {
-			throw new Error('Events.delete: Missing eventId argument');
+		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.delete');
+		if (undefined !== checkResult) {
+			return checkResult;
 		}
 
 		return this._httpRequest.delete(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
@@ -53,7 +69,10 @@ class Events {
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
 	 */
 	get(calendarId, eventId, params) {
-		this._checkCalendarId(calendarId, 'GetEvent');
+		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.get');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
@@ -77,7 +96,10 @@ class Events {
 	 * @param {string} params.colorId (optional) 		- Color of the event
 	 */
 	insert(calendarId, params) {
-		this._checkCalendarId(calendarId, 'insertEvent');
+		let checkResult = this._checkCalendarId(calendarId, 'Events.insert');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.post(calendarId, `${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
@@ -96,7 +118,10 @@ class Events {
 	 * @param {string} eventId 						- EventId specifying event to delete
 	 */
 	instances(calendarId, eventId, params) {
-		this._checkCalendarId(calendarId, 'EventInstances');
+		let checkResult = this._checkCalendarId(calendarId, 'Events.instances');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
 			.then(resp => {
@@ -117,7 +142,10 @@ class Events {
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
 	 */
 	list(calendarId, params) {
-		this._checkCalendarId(calendarId, 'listEvents');
+		let checkResult = this._checkCalendarId(calendarId, 'Events.list');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.get(calendarId, `${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
@@ -137,9 +165,12 @@ class Events {
 	 * @param {string} params.destination 	- Destination CalendarId to move event to
 	 */
 	move(calendarId, eventId, params) {
-		this._checkCalendarId(calendarId, 'MoveEvent');
-		if (params.destination === undefined) {
-			throw new Error('moveEvent: Missing destination CalendarId argument');
+		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.move');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
+		if (undefined === params.destination) {
+			return this._returnPromiseWithError('Events.move: Missing destination CalendarId argument');
 		}
 
 		return this._httpRequest.postWithQueryString(calendarId, `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
@@ -159,7 +190,10 @@ class Events {
 	 * @param {string} params.text 					- The text describing the event to be created.
 	 */
 	quickAdd(calendarId, params) {
-		this._checkCalendarId(calendarId, 'QuickAddEvent');
+		let checkResult = this._checkCalendarId(calendarId, 'Events.quickAdd');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.postWithQueryString(calendarId, `${this._gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
 			.then(resp => {
@@ -178,7 +212,10 @@ class Events {
 	 * @param {string} eventId 						- EventId specifying event to update
 	 */
 	update(calendarId, eventId, params) {
-		this._checkCalendarId(calendarId, 'UpdateEvent');
+		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.update');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.put(calendarId, `${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
@@ -196,7 +233,10 @@ class Events {
 	 * @param {string} calendarId		- Calendar identifier
 	 */
 	watch(calendarId, params) {
-		this._checkCalendarId(calendarId, 'WatchEvent');
+		let checkResult = this._checkCalendarId(calendarId, 'Events.watch');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 
 		return this._httpRequest.post(calendarId, `${this._gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
 			.then(resp => {

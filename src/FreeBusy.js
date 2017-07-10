@@ -10,9 +10,16 @@ class FreeBusy {
 		this._timezone = timezone;
 	}
 
+	_returnPromiseWithError(errorMsg) {
+		return new Promise((resolve, reject) => {
+			let err = new Error(errorMsg);
+			reject(err);
+		});
+	}
+
 	_checkCalendarId(calendarId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			throw new Error(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
 		}
 	}
 
@@ -32,7 +39,10 @@ class FreeBusy {
 	 * @param {string} items[].id		- The identifier of a calendar or a group to query
 	 */
 	query(calendarId, params) {
-		this._checkCalendarId(calendarId, 'query');
+		let checkResult = this._checkCalendarId(calendarId, 'query');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
 		if (params.timeZone === undefined) {
 			params.timeZone = this._timezone;
 		}
