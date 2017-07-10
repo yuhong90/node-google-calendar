@@ -1,4 +1,10 @@
 *.pem
 *.log
+*.md
+*.yml
+node_modules
 example
 config
+test
+json-googleapi-key
+
