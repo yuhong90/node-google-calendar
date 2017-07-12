@@ -193,6 +193,7 @@ describe('Events.js', function () {
 	});
 
 	it('Should return statusCode 204 & delete success message when Events.delete', () => {
+		let eventToDelete = 'eventid';
 		let mockResponse = {
 			statusCode: 204,
 			body: ''
@@ -200,10 +201,10 @@ describe('Events.js', function () {
 		let mockHttpRequest = {
 			delete: sinon.stub().resolves(mockResponse)
 		};
-		let expectedResult = { statusCode: mockResponse.statusCode, message: 'Event delete success' };
+		let expectedResult = { eventId: eventToDelete, statusCode: mockResponse.statusCode, message: 'Event delete success' };
 
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
-		return eventsInstance.delete('calendarid', 'eventid', {})
+		return eventsInstance.delete('calendarid', eventToDelete, {})
 			.then((results) => {
 				expect(expectedResult).to.eql(results);
 			});

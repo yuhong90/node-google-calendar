@@ -54,7 +54,7 @@ class Events {
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				let status = resp.statusCode;
-				return { statusCode: status, message: 'Event delete success' };
+				return { eventId: eventId, statusCode: status, message: 'Event delete success' };
 			})
 			.catch(err => {
 				throw new Error('Events.delete ' + err);
