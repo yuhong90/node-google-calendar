@@ -37,7 +37,7 @@ describe('Events.js', function () {
 		}
 	});
 
-	it('Should return error when calling Events.list with missing calendarId argument', () => {
+	it('Should return rejected promise with error when calling Events.list with missing calendarId argument', () => {
 		let expectedResult = new Error('Events.list: Missing calendarId argument; Check if defined in params and Settings file');
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
@@ -47,7 +47,7 @@ describe('Events.js', function () {
 			});
 	});
 
-	it('Should return error when calling Events.get with missing calendarId argument', () => {
+	it('Should return rejected  promise with error when calling Events.get with missing calendarId argument', () => {
 		let expectedResult = new Error('Events.get: Missing calendarId argument; Check if defined in params and Settings file');
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
@@ -57,8 +57,7 @@ describe('Events.js', function () {
 			});
 	});
 
-
-	it('Should return error when calling Events.get with missing eventId argument', () => {
+	it('Should return rejected promise with error when calling Events.get with missing eventId argument', () => {
 		let expectedResult = new Error('Events.get: Missing eventId argument');
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
@@ -68,7 +67,22 @@ describe('Events.js', function () {
 			});
 	});
 
-	it('Should return error when http response returns non-200 error code during Events.list', () => {
+	it('Should return rejected promise with error when http response returns error during Events.get', () => {
+		let mockResponse = new Error('test error');
+
+		let mockHttpRequest = {
+			get: sinon.stub().rejects(mockResponse)
+		};
+		let expectedResult = new Error('Events.get ' + mockResponse);
+
+		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
+		return eventsInstance.get('calendarid', 'eventid', {})
+			.catch((err) => {
+				expect(expectedResult.message).to.eql(err.message);
+			});
+	});
+
+	it('Should return rejected promise with error when http response returns non-200 error code during Events.list', () => {
 		let mockResponse = {
 			statusCode: 400,
 			statusMessage: 'Not Found',
