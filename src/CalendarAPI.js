@@ -1,3 +1,6 @@
+const cal = require('./Calendars');
+const calList = require('./CalendarList');
+const calAcl = require('./Acl');
 const calEvents = require('./Events');
 const calSettings = require('./Settings');
 const calFreeBusy = require('./FreeBusy');
@@ -6,6 +9,7 @@ const httpRequest = new Request();
 
 const gcalBaseUrl = 'https://www.googleapis.com/calendar/v3/';
 const calUrl = `${gcalBaseUrl}calendars/`;
+const calListUrl = `${gcalBaseUrl}users/me/calendarList/`;
 const settingUrl = `${gcalBaseUrl}users/me/settings/`;
 const freebusyUrl = `${gcalBaseUrl}freeBusy`;
 
@@ -30,6 +34,9 @@ class CalendarAPI {
 		}
 
 		this._timezone = config.timezone;
+		this._calendars = new cal(httpRequest, this._JWT, calUrl);
+		this._calendarList = new calList(httpRequest, this._JWT, calListUrl);
+		this._acl = new calAcl(httpRequest, this._JWT, calUrl);
 		this._events = new calEvents(httpRequest, this._JWT, calUrl);
 		this._settings = new calSettings(httpRequest, this._JWT, settingUrl);
 		this._freeBusy = new calFreeBusy(httpRequest, this._JWT, freebusyUrl, this._timezone);
@@ -45,6 +52,18 @@ class CalendarAPI {
 
 	get FreeBusy() {
 		return this._freeBusy;
+	}
+
+	get Calendars() {
+		return this._calendars;
+	}
+
+	get CalendarList() {
+		return this._calendarList;
+	}
+
+	get Acl() {
+		return this._acl;
 	}
 }
 
