@@ -31,7 +31,7 @@ const CALENDAR_ID = {
 };
 
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.keyfile = KEYFILE;           	//or if using json keys -> module.exports.key = key; 
+module.exports.keyFile = KEYFILE;           	//or if using json keys -> module.exports.key = key; 
 module.exports.timezone = TIMEZONE;
 module.exports.calendarId = CALENDAR_ID;
 ```

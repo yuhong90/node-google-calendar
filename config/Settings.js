@@ -3,13 +3,13 @@ const SERVICE_ACCT_ID = '...@...iam.gserviceaccount.com';
 const KEYFILE = 'your-google-api-keyfile.pem';				//path to pem key
 const TIMEZONE = 'UTC+08:00';
 const CALENDAR_ID = {
-	'primary': '',
+	'primary': '...@gmail.com',
 	'calendar-1': 'calendar1@group.calendar.google.com',
 	'calendar-2': 'calendar2@group.calendar.google.com'
 };
 
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.keyfile = KEYFILE;
+module.exports.keyFile = KEYFILE;
 module.exports.timezone = TIMEZONE;
 module.exports.calendarId = CALENDAR_ID;
 
@@ -19,3 +19,4 @@ module.exports.calendarId = CALENDAR_ID;
 // var json = fs.readFileSync(KEYPATH, 'utf8');
 // var key = JSON.parse(json).private_key;
 // module.exports.key = key;
+
