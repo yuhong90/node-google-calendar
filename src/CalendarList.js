@@ -10,7 +10,7 @@ class CalendarList {
 		this._calListBaseUrl = calListBaseUrl;
 	}
 
-	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
+	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
 			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
@@ -30,7 +30,7 @@ class CalendarList {
 	}
 
 	get(calendarId) {
-		return this._httpRequest.get(calendarId, `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
+		return this._httpRequest.get('', `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -41,8 +41,9 @@ class CalendarList {
 			});
 	}
 
-	insert(params) {
-		return this._httpRequest.post(calendarId, `${this._calListBaseUrl}`, params, this._JWT)
+	insert(calendarId, params) {
+		params.id = calendarId;
+		return this._httpRequest.post('', `${this._calListBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -54,7 +55,7 @@ class CalendarList {
 	}
 
 	update(calendarId, params) {
-		return this._httpRequest.put(calendarId, `${this._calListBaseUrl}${calendarId}`, params, this._JWT)
+		return this._httpRequest.put('', `${this._calListBaseUrl}${calendarId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -66,11 +67,10 @@ class CalendarList {
 	}
 
 	delete(calendarId) {
-		return this._httpRequest.delete(calendarId, `${this._calListBaseUrl}${calendarId}`, params, this._JWT)
+		return this._httpRequest.delete('', `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
-				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
-				return body;
+				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
+				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar entry deleted successfully from CalendarList' };
 			})
 			.catch(err => {
 				throw new Error('CalendarList.delete ' + err);

@@ -10,11 +10,11 @@ class Acl {
 		this._aclBaseUrl = aclBaseUrl;
 	}
 
-	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
+	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
 			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
-		};
+		}
 	}
 
 	list(calendarId, params) {

@@ -26,7 +26,7 @@ class FreeBusy {
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
 		if (actualStatusCode !== expectedStatusCode) {
 			throw new Error('Resp StatusCode ' + actualStatusCode + ':\nerrorBody:' + JSON.stringify(resp));
-		};
+		}
 	}
 
 	/** Checks when queried calendar is busy during selected time range.

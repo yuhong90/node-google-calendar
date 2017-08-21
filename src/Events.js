@@ -35,7 +35,7 @@ class Events {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
 			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
-		};
+		}
 	}
 
 	/** Deletes an event on the calendar specified. Returns promise with success msg if success
