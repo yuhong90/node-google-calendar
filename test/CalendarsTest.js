@@ -101,12 +101,18 @@ describe('Calendars.js', function () {
 		let calendarToDelete = 'calendarid';
 		let mockResponse = {
 			statusCode: 204,
+			statusMessage: 'No Content',
 			body: ''
 		};
 		let mockHttpRequest = {
 			delete: sinon.stub().resolves(mockResponse)
 		};
-		let expectedResult = { calendarId: calendarToDelete, statusCode: mockResponse.statusCode, message: 'Calendar delete success' };
+		let expectedResult = {
+			calendarId: calendarToDelete,
+			statusCode: mockResponse.statusCode,
+			statusMessage: mockResponse.statusMessage,
+			message: 'Calendar deleted successfully'
+		};
 
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.delete('calendarid', calendarToDelete, {})
@@ -124,7 +130,7 @@ describe('Calendars.js', function () {
 		let mockHttpRequest = {
 			post: sinon.stub().resolves(mockResponse)
 		};
-		let expectedResult = { calendarId: calendarToClear, statusCode: mockResponse.statusCode, message: 'Calendar clear success' };
+		let expectedResult = { calendarId: calendarToClear, statusCode: mockResponse.statusCode, message: 'Calendar cleared successfully' };
 
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.clear('calendarid', calendarToClear, {})

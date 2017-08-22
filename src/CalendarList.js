@@ -70,7 +70,7 @@ class CalendarList {
 		return this._httpRequest.delete('', `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
-				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar entry deleted successfully from CalendarList' };
+				return { calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Calendar entry deleted successfully from CalendarList' };
 			})
 			.catch(err => {
 				throw new Error('CalendarList.delete ' + err);

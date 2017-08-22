@@ -21,7 +21,7 @@ class Calendars {
 		return this._httpRequest.post('', `${this._calBaseUrl}${calendarId}/clear`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
-				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar clear success' };
+				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar cleared successfully' };
 			})
 			.catch(err => {
 				throw new Error('Calendars.clear ' + err);
@@ -68,7 +68,7 @@ class Calendars {
 		return this._httpRequest.delete('', `${this._calBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
-				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar delete success' };
+				return { calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Calendar deleted successfully' };
 			})
 			.catch(err => {
 				throw new Error('Calendars.delete ' + err);

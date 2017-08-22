@@ -210,12 +210,18 @@ describe('Events.js', function () {
 		let eventToDelete = 'eventid';
 		let mockResponse = {
 			statusCode: 204,
+			statusMessage: 'No Content',
 			body: ''
 		};
 		let mockHttpRequest = {
 			delete: sinon.stub().resolves(mockResponse)
 		};
-		let expectedResult = { eventId: eventToDelete, statusCode: mockResponse.statusCode, message: 'Event delete success' };
+		let expectedResult = {
+			eventId: eventToDelete,
+			statusCode: mockResponse.statusCode,
+			statusMessage: mockResponse.statusMessage,
+			message: 'Event deleted successfully'
+		};
 
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.delete('calendarid', eventToDelete, {})
