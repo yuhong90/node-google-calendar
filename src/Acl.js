@@ -68,9 +68,8 @@ class Acl {
 	delete(calendarId, ruleId) {
 		return this._httpRequest.delete(calendarId, `${this._aclBaseUrl}${calendarId}/acl/${ruleId}`, '', this._JWT)
 			.then(resp => {
-				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
-				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
-				return body;
+				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
+				return { ruleId: ruleId, calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Acl rule deleted successfully' };
 			})
 			.catch(err => {
 				throw new Error('Acl.delete ' + err);
