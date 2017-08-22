@@ -48,7 +48,15 @@ You should now be able to query your specified calendar and try out the followin
 
 
 ## APIs
-[Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) supported includes APIs in resource types of [Events](https://developers.google.com/google-apps/calendar/v3/reference/events), [FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy) & [Settings](https://developers.google.com/google-apps/calendar/v3/reference/settings). Some examples are as follows:
+Most of the [Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) are supported, which includes APIs in resource types of 
+[Calendars](https://developers.google.com/google-apps/calendar/v3/reference/calendars),
+[CalendarList](https://developers.google.com/google-apps/calendar/v3/reference/calendarList),
+[Acl](https://developers.google.com/google-apps/calendar/v3/reference/acl),
+[Events](https://developers.google.com/google-apps/calendar/v3/reference/events), 
+[FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy), 
+[Settings](https://developers.google.com/google-apps/calendar/v3/reference/settings),
+[Colors](https://developers.google.com/google-apps/calendar/v3/reference/colors) &
+[Channels](https://developers.google.com/google-apps/calendar/v3/reference/channels). Some examples are as follows:
 
 ### [Events](https://github.com/yuhong90/node-google-calendar/blob/master/src/Events.js) Examples 
 Events.list - To Get a promise of all single events in calendar within a time period.
@@ -141,4 +149,4 @@ cal.Settings.list(params)
   });
 ```
 
-More examples [here](https://github.com/yuhong90/node-google-calendar/blob/master/example/Example.js).
+More code examples of the various APIs [here](https://github.com/yuhong90/node-google-calendar/tree/master/example).
