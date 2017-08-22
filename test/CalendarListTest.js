@@ -123,7 +123,7 @@ describe('CalendarList.js', function () {
 			});
 	});
 
-	it('Should return http response body when calendarList.update', () => {
+	it('Should return http response body when CalendarList.update', () => {
 		let calendarToUpdate = 'calendarid@group.calendar.google.com'
 		let inputParams = {
 			summaryOverride: 'test update summary',
@@ -162,7 +162,7 @@ describe('CalendarList.js', function () {
 			});
 	});
 
-	it('Should return statusCode 204 & delete success message when calendarList.delete', () => {
+	it('Should return statusCode 204 & delete success message when CalendarList.delete', () => {
 		let mockResponse = {
 			statusCode: 204,
 			statusMessage: 'No Content',
@@ -185,7 +185,7 @@ describe('CalendarList.js', function () {
 			});
 	});
 
-	it('Should return rejected promise with error when http response returns non-200 error code during calendarList.delete', () => {
+	it('Should return rejected promise with error when http response returns non-200 error code during CalendarList.delete', () => {
 		let mockResponse = {
 			statusCode: 404,
 			statusMessage: 'Not Found',
@@ -215,7 +215,7 @@ describe('CalendarList.js', function () {
 			});
 	});
 
-	it('Should return http response body when calendarList.watch', () => {
+	it('Should return http response body when CalendarList.watch', () => {
 		let inputParams = {
 			'id': '01234567-89ab-cdef-0123456789ab', 				// Your channel ID.
 			'type': 'web_hook',

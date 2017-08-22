@@ -1,6 +1,8 @@
 const cal = require('./Calendars');
 const calList = require('./CalendarList');
 const calAcl = require('./Acl');
+const calChannels = require('./Channels');
+const calColors = require('./Colors');
 const calEvents = require('./Events');
 const calSettings = require('./Settings');
 const calFreeBusy = require('./FreeBusy');
@@ -11,7 +13,9 @@ const gcalBaseUrl = 'https://www.googleapis.com/calendar/v3/';
 const calUrl = `${gcalBaseUrl}calendars/`;
 const calListUrl = `${gcalBaseUrl}users/me/calendarList/`;
 const settingUrl = `${gcalBaseUrl}users/me/settings/`;
-const freebusyUrl = `${gcalBaseUrl}freeBusy`;
+const freebusyUrl = `${gcalBaseUrl}freeBusy/`;
+const colourUrl = `${gcalBaseUrl}colors/`;
+const channelUrl = `${gcalBaseUrl}channels/`;
 
 class CalendarAPI {
 
@@ -37,6 +41,8 @@ class CalendarAPI {
 		this._calendars = new cal(httpRequest, this._JWT, calUrl);
 		this._calendarList = new calList(httpRequest, this._JWT, calListUrl);
 		this._acl = new calAcl(httpRequest, this._JWT, calUrl);
+		this._channels = new calChannels(httpRequest, this._JWT, channelUrl);
+		this._colors = new calColors(httpRequest, this._JWT, colourUrl);
 		this._events = new calEvents(httpRequest, this._JWT, calUrl);
 		this._settings = new calSettings(httpRequest, this._JWT, settingUrl);
 		this._freeBusy = new calFreeBusy(httpRequest, this._JWT, freebusyUrl, this._timezone);
@@ -64,6 +70,14 @@ class CalendarAPI {
 
 	get Acl() {
 		return this._acl;
+	}
+
+	get Channels() {
+		return this._channels;
+	}
+
+	get Colors() {
+		return this._colors;
 	}
 }
 
