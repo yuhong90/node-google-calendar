@@ -76,6 +76,18 @@ class CalendarList {
 				throw new Error('CalendarList.delete ' + err);
 			});
 	}
+
+	watch(params) {
+		return this._httpRequest.post('', `${this._calListBaseUrl}/watch`, '', this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
+				return body;
+			})
+			.catch(err => {
+				throw new Error('CalendarList.watch ' + err);
+			});
+	}
 }
 
 module.exports = CalendarList;

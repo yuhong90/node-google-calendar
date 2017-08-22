@@ -185,4 +185,36 @@ describe('CalendarList.js', function () {
 				expect(expectedResult).to.eql(results);
 			});
 	});
+
+	it('Should return http response body when calendarList.watch', () => {
+		let inputParams = {
+			'id': '01234567-89ab-cdef-0123456789ab', 				// Your channel ID.
+			'type': 'web_hook',
+			'address': 'https://mydomain.com/notifications', 		// Your receiving URL.
+			'token': 'target=myApp-myCalendarListChannelDest', 			// (Optional) Your channel token.
+			'expiration': 1426325213000 							// (Optional) Your requested channel expiration time.
+		};
+		let mockResponse = {
+			statusCode: 200,
+			body: {
+				'kind': 'api#channel',
+				'id': inputParams.id, 																			// ID you specified for this channel.
+				'resourceId': 'o3hgv1538sdjfh', 																// ID of the watched resource.
+				'resourceUri': 'https://www.googleapis.com/calendar/v3/users/me/calendarList/', 				// Version-specific ID of the watched resource.
+				'token': inputParams.token, 																	// Present only if one was provided.
+				'expiration': inputParams.expiration 															// Actual expiration time as Unix timestamp (in ms), if applicable.
+			}
+		};
+		let mockHttpRequest = {
+			post: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = mockResponse.body;
+
+		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
+		return calendarListInstance.watch(inputParams)
+			.then((results) => {
+				expect(expectedResult).to.eql(results);
+			});
+	});
+
 });

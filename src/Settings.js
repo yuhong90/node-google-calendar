@@ -41,6 +41,17 @@ class Settings {
 			});
 	}
 
+	watch(params) {
+		return this._httpRequest.post('', `${this._settingBaseUrl}/watch`, params, this._JWT)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
+				return body;
+			})
+			.catch(err => {
+				throw new Error('Settings.watch ' + err);
+			});
+	}
 }
 
 module.exports = Settings;
