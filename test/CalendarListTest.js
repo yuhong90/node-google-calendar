@@ -64,7 +64,7 @@ describe('CalendarList.js', function () {
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarListInstance.list()
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -81,7 +81,7 @@ describe('CalendarList.js', function () {
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarListInstance.get(mockCalendarId)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -119,7 +119,7 @@ describe('CalendarList.js', function () {
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarListInstance.insert(mockCalendarId, inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -158,12 +158,11 @@ describe('CalendarList.js', function () {
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarListInstance.update(calendarToUpdate, inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
 	it('Should return statusCode 204 & delete success message when calendarList.delete', () => {
-		let calendarToDelete = 'calendarid';
 		let mockResponse = {
 			statusCode: 204,
 			statusMessage: 'No Content',
@@ -173,16 +172,46 @@ describe('CalendarList.js', function () {
 			delete: sinon.stub().resolves(mockResponse)
 		};
 		let expectedResult = {
-			calendarId: calendarToDelete,
+			calendarId: mockCalendarId,
 			statusCode: mockResponse.statusCode,
 			statusMessage: mockResponse.statusMessage,
 			message: 'Calendar entry deleted successfully from CalendarList'
 		};
 
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
-		return calendarListInstance.delete(calendarToDelete)
+		return calendarListInstance.delete(mockCalendarId)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
+			});
+	});
+
+	it('Should return rejected promise with error when http response returns non-200 error code during calendarList.delete', () => {
+		let mockResponse = {
+			statusCode: 404,
+			statusMessage: 'Not Found',
+			body: {
+				error: {
+					errors: [{ domain: 'global', reason: 'notFound', message: 'Not Found' }],
+					code: 404,
+					message: 'Not Found'
+				}
+			}
+		};
+		let mockHttpRequest = {
+			delete: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = {
+			origin: 'CalendarList.delete',
+			error: {
+				statusCode: `${mockResponse.statusCode}(${mockResponse.statusMessage})`,
+				errorBody: mockResponse.body
+			}
+		};
+
+		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
+		return calendarListInstance.delete(mockCalendarId)
+			.catch((err) => {
+				expect(JSON.parse(err.message)).to.eql(expectedResult);
 			});
 	});
 
@@ -191,7 +220,7 @@ describe('CalendarList.js', function () {
 			'id': '01234567-89ab-cdef-0123456789ab', 				// Your channel ID.
 			'type': 'web_hook',
 			'address': 'https://mydomain.com/notifications', 		// Your receiving URL.
-			'token': 'target=myApp-myCalendarListChannelDest', 			// (Optional) Your channel token.
+			'token': 'target=myApp-myCalendarListChannelDest', 		// (Optional) Your channel token.
 			'expiration': 1426325213000 							// (Optional) Your requested channel expiration time.
 		};
 		let mockResponse = {
@@ -213,7 +242,7 @@ describe('CalendarList.js', function () {
 		let calendarListInstance = new calendarList(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarListInstance.watch(inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 

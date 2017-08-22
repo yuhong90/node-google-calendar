@@ -44,7 +44,45 @@ describe('FreeBusy.js', function () {
 		let freebusyInstance = new freebusy(mockHttpRequest, 'jwt', 'gcalurl', 'timezone');
 		return freebusyInstance.query(mockCalendarId, {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
+			});
+	});
+
+	it('Should return rejected promise with error when http response returns non-200 error code during FreeBusy.query', () => {
+		let mockCalendarId = '...@gmail.com';
+		let mockResponse = {
+			statusCode: 400,
+			statusMessage: 'Missing parameter',
+			body: {
+				"error": {
+					"errors": [
+						{
+							"domain": "global",
+							"reason": "required",
+							"message": "Missing timeMin parameter."
+						}
+					],
+					"code": 400,
+					"message": "Missing timeMin parameter."
+				}
+			}
+		};
+
+		let mockHttpRequest = {
+			post: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = {
+			origin: 'FreeBusy.query',
+			error: {
+				statusCode: `${mockResponse.statusCode}(${mockResponse.statusMessage})`,
+				errorBody: mockResponse.body
+			}
+		};
+
+		let freebusyInstance = new freebusy(mockHttpRequest, 'jwt', 'gcalurl', 'timezone');
+		return freebusyInstance.query(mockCalendarId, {})
+			.catch((err) => {
+				expect(JSON.parse(err.message)).to.eql(expectedResult);
 			});
 	});
 

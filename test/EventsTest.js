@@ -37,47 +37,80 @@ describe('Events.js', function () {
 	});
 
 	it('Should return rejected promise with error when calling Events.list with missing calendarId argument', () => {
-		let expectedResult = new Error('Events.list: Missing calendarId argument; Check if defined in params and Settings file');
+		let expectErr = { origin: 'Events.list', error: 'Missing calendarId argument; Check if defined in params and Settings file' };
+		let expectedResult = new Error(JSON.stringify(expectErr));
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
 		return eventsInstance.list(undefined, {})
 			.catch((err) => {
-				expect(expectedResult.message).to.eql(err.message);
+				expect(err.message).to.eql(expectedResult.message);
 			});
 	});
 
-	it('Should return rejected  promise with error when calling Events.get with missing calendarId argument', () => {
-		let expectedResult = new Error('Events.get: Missing calendarId argument; Check if defined in params and Settings file');
+	it('Should return rejected promise with error when calling Events.get with missing calendarId argument', () => {
+		let expectErr = { origin: 'Events.get', error: 'Missing calendarId argument; Check if defined in params and Settings file' };
+		let expectedResult = new Error(JSON.stringify(expectErr));
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
 		return eventsInstance.get(undefined, {})
 			.catch((err) => {
-				expect(expectedResult.message).to.eql(err.message);
+				expect(err.message).to.eql(expectedResult.message);
 			});
 	});
 
 	it('Should return rejected promise with error when calling Events.get with missing eventId argument', () => {
-		let expectedResult = new Error('Events.get: Missing eventId argument');
+		let expectErr = { origin: 'Events.get', error: 'Missing eventId argument' };
+		let expectedResult = new Error(JSON.stringify(expectErr));
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
 		return eventsInstance.get('calendarId', undefined, {})
 			.catch((err) => {
-				expect(expectedResult.message).to.eql(err.message);
+				expect(err.message).to.eql(expectedResult.message);
 			});
 	});
 
 	it('Should return rejected promise with error when http response returns error during Events.get', () => {
-		let mockResponse = new Error('test error');
+		let mockErrorMessage = 'test error';
+		let mockResponse = new Error(mockErrorMessage);
 
 		let mockHttpRequest = {
 			get: sinon.stub().rejects(mockResponse)
 		};
-		let expectedResult = new Error('Events.get ' + mockResponse);
+		let expectedResult = {
+			origin: 'Events.get',
+			error: mockErrorMessage
+		};
 
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.get('calendarid', 'eventid', {})
 			.catch((err) => {
-				expect(expectedResult.message).to.eql(err.message);
+				expect(JSON.parse(err.message)).to.eql(expectedResult);
+			});
+	});
+
+	it('Should return rejected promise with error when http response returns non-200 error code with errorMessage string in body during Events.get', () => {
+		let mockResponse = {
+			statusCode: 400,
+			statusMessage: 'Not Found',
+			body: 'Not Found'
+		};
+
+		let mockHttpRequest = {
+			get: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = {
+			origin: 'Events.get',
+			error: {
+				statusCode: `${mockResponse.statusCode}(${mockResponse.statusMessage})`,
+				errorBody: mockResponse.body
+			}
+		};
+
+		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
+		return eventsInstance.get('calendarid', 'eventid', {})
+			.catch((err) => {
+				let errorObject = JSON.parse(err.message);
+				expect(errorObject).to.eql(expectedResult);
 			});
 	});
 
@@ -97,12 +130,19 @@ describe('Events.js', function () {
 		let mockHttpRequest = {
 			get: sinon.stub().resolves(mockResponse)
 		};
-		let expectedResult = new Error('Events.list Error: Resp StatusCode ' + mockResponse.statusCode + '(' + mockResponse.statusMessage + '):\nerrorBody:' + JSON.stringify(mockResponse.body));
+		let expectedResult = {
+			origin: 'Events.list',
+			error: {
+				statusCode: `${mockResponse.statusCode}(${mockResponse.statusMessage})`,
+				errorBody: mockResponse.body
+			}
+		};
 
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.list('calendarid', {})
 			.catch((err) => {
-				expect(expectedResult.message).to.eql(err.message);
+				let errorObject = JSON.parse(err.message);
+				expect(errorObject).to.eql(expectedResult);
 			});
 	});
 
@@ -131,7 +171,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.list('calendarid', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -149,7 +189,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.get('calendarid', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -166,7 +206,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.quickAdd('calendarid', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -184,7 +224,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.insert('calendarid', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -201,7 +241,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.update('calendarid', 'eventId', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -225,7 +265,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.delete('calendarid', eventToDelete, {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -244,11 +284,11 @@ describe('Events.js', function () {
 		let params = { 'destination': 'destination-calendar' };
 		return eventsInstance.move('calendarid', 'eventId', params)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
-	it('Should return error when calling Events.move with missing destination CalendarId argument', () => {
+	it('Should return rejected promise with error when calling Events.move with missing destination CalendarId argument', () => {
 		let expectedResult = new Error('Events.move: Missing destination CalendarId argument');
 
 		let eventsInstance = new events('httpRequest', 'jwt', 'gcalurl');
@@ -286,7 +326,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.watch(calendarId, {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -321,7 +361,7 @@ describe('Events.js', function () {
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
 		return eventsInstance.instances('calendarid', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 });

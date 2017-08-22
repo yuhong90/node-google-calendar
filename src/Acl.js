@@ -13,7 +13,16 @@ class Acl {
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
-			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
+			let errorObject = { statusCode: `${actualStatusCode}${statusMsg}`, errorBody: respBody };
+			throw new Error(JSON.stringify(errorObject));
+		}
+	}
+
+	_tryParseJSON(stringToParse) {
+		try {
+			return JSON.parse(stringToParse);
+		} catch (e) {
+			return stringToParse;
 		}
 	}
 
@@ -25,7 +34,11 @@ class Acl {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Acl.list ' + err);
+				let error = {
+					origin: 'Acl.list',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -37,7 +50,11 @@ class Acl {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Acl.get ' + err);
+				let error = {
+					origin: 'Acl.get',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -49,7 +66,11 @@ class Acl {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Acl.insert ' + err);
+				let error = {
+					origin: 'Acl.insert',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -61,7 +82,11 @@ class Acl {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Acl.update ' + err);
+				let error = {
+					origin: 'Acl.update',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -72,7 +97,11 @@ class Acl {
 				return { ruleId: ruleId, calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Acl rule deleted successfully' };
 			})
 			.catch(err => {
-				throw new Error('Acl.delete ' + err);
+				let error = {
+					origin: 'Acl.delete',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -84,7 +113,11 @@ class Acl {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Acl.watch ' + err);
+				let error = {
+					origin: 'Acl.watch',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 }

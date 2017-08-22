@@ -36,6 +36,33 @@ describe('Acl.js', function () {
 		}
 	});
 
+	it('Should return rejected promise with error when http response with non-200 status code during Acl.list', () => {
+		let mockResponse = {
+			statusCode: 404,
+			statusMessage: 'Not Found',
+			body: {
+				'error': {
+					'errors': [{ 'domain': 'global', 'reason': 'notFound', 'message': 'Not Found' }],
+					'code': 404,
+					'message': 'Not Found'
+				}
+			}
+		};
+		let mockHttpRequest = {
+			get: sinon.stub().resolves(mockResponse)
+		};
+		let expectedResult = {
+			origin: 'Acl.list',
+			error: { statusCode: `${mockResponse.statusCode}(${mockResponse.statusMessage})`, errorBody: mockResponse.body }
+		};
+
+		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
+		return aclInstance.list()
+			.catch((err) => {
+				expect(JSON.parse(err.message)).to.eql(expectedResult);
+			});
+	});
+
 	it('Should return http response body when Acl.list', () => {
 		let mockResponse = {
 			statusCode: 200,
@@ -58,7 +85,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.list()
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -76,7 +103,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.get(mockCalendarId, ruleId)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -104,7 +131,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.insert(mockCalendarId, inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -132,7 +159,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.update(mockCalendarId, ruleId, inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -157,7 +184,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.delete(mockCalendarId, ruleId)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -188,7 +215,7 @@ describe('Acl.js', function () {
 		let aclInstance = new acl(mockHttpRequest, 'jwt', 'gcalurl');
 		return aclInstance.watch(inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 });

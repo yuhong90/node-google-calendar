@@ -36,7 +36,7 @@ describe('Calendars.js', function () {
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.get(calendarId)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -61,7 +61,7 @@ describe('Calendars.js', function () {
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.insert(inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -93,7 +93,7 @@ describe('Calendars.js', function () {
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.update(calToUpdate, inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -117,7 +117,7 @@ describe('Calendars.js', function () {
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.delete('calendarid', calendarToDelete, {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -135,7 +135,7 @@ describe('Calendars.js', function () {
 		let calendarsInstance = new calendars(mockHttpRequest, 'jwt', 'gcalurl');
 		return calendarsInstance.clear('calendarid', calendarToClear, {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 });

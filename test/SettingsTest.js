@@ -33,7 +33,7 @@ describe('Settings.js', function () {
 		let settingsInstance = new settings(mockHttpRequest, 'jwt', 'gcalurl');
 		return settingsInstance.get('settingsId', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -74,7 +74,7 @@ describe('Settings.js', function () {
 		let settingsInstance = new settings(mockHttpRequest, 'jwt', 'gcalurl');
 		return settingsInstance.list('settingsId', {})
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 
@@ -105,7 +105,7 @@ describe('Settings.js', function () {
 		let settingsInstance = new settings(mockHttpRequest, 'jwt', 'gcalurl');
 		return settingsInstance.watch(inputParams)
 			.then((results) => {
-				expect(expectedResult).to.eql(results);
+				expect(results).to.eql(expectedResult);
 			});
 	});
 });

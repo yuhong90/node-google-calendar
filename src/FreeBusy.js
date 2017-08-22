@@ -19,13 +19,24 @@ class FreeBusy {
 
 	_checkCalendarId(calendarId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+			let errorObject = { origin: errorOrigin, error: 'Missing calendarId argument; Check if defined in params and Settings file' };
+			return this._returnPromiseWithError(JSON.stringify(errorObject));
 		}
 	}
 
-	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp) {
+	_checkErrorResponse(expectedStatusCode, actualStatusCode, resp, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
-			throw new Error('Resp StatusCode ' + actualStatusCode + ':\nerrorBody:' + JSON.stringify(resp));
+			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
+			let errorObject = { statusCode: `${actualStatusCode}${statusMsg}`, errorBody: resp };
+			throw new Error(JSON.stringify(errorObject));
+		}
+	}
+
+	_tryParseJSON(stringToParse) {
+		try {
+			return JSON.parse(stringToParse);
+		} catch (e) {
+			return stringToParse;
 		}
 	}
 
@@ -53,7 +64,11 @@ class FreeBusy {
 				return resp.body.calendars[calendarId].busy;
 			})
 			.catch(err => {
-				throw new Error('FreeBusy.query ' + err);
+				let error = {
+					origin: 'FreeBusy.query',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 }

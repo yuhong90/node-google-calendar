@@ -13,7 +13,16 @@ class Calendars {
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
-			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
+			let errorObject = { statusCode: `${actualStatusCode}${statusMsg}`, errorBody: respBody };
+			throw new Error(JSON.stringify(errorObject));
+		}
+	}
+
+	_tryParseJSON(stringToParse) {
+		try {
+			return JSON.parse(stringToParse);
+		} catch (e) {
+			return stringToParse;
 		}
 	}
 
@@ -24,7 +33,11 @@ class Calendars {
 				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar cleared successfully' };
 			})
 			.catch(err => {
-				throw new Error('Calendars.clear ' + err);
+				let error = {
+					origin: 'Calendars.clear',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -36,7 +49,11 @@ class Calendars {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Calendars.get ' + err);
+				let error = {
+					origin: 'Calendars.get',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -48,7 +65,11 @@ class Calendars {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Calendars.insert ' + err);
+				let error = {
+					origin: 'Calendars.insert',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -60,7 +81,11 @@ class Calendars {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Calendars.update ' + err);
+				let error = {
+					origin: 'Calendars.update',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -71,7 +96,11 @@ class Calendars {
 				return { calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Calendar deleted successfully' };
 			})
 			.catch(err => {
-				throw new Error('Calendars.delete ' + err);
+				let error = {
+					origin: 'Calendars.delete',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 }

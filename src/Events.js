@@ -18,23 +18,36 @@ class Events {
 
 	_checkCalendarId(calendarId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+			let errorObject = { origin: errorOrigin, error: 'Missing calendarId argument; Check if defined in params and Settings file' };
+			return this._returnPromiseWithError(JSON.stringify(errorObject));
 		}
 	}
 
 	_checkCalendarAndEventId(calendarId, eventId, errorOrigin) {
 		if (calendarId === undefined || calendarId == '') {
-			return this._returnPromiseWithError(errorOrigin + ': Missing calendarId argument; Check if defined in params and Settings file');
+			let errorObject = { origin: errorOrigin, error: 'Missing calendarId argument; Check if defined in params and Settings file' };
+			return this._returnPromiseWithError(JSON.stringify(errorObject));
 		}
 		if (undefined === eventId) {
-			return this._returnPromiseWithError(errorOrigin + ': Missing eventId argument');
+			let errorObject = { origin: errorOrigin, error: 'Missing eventId argument' }
+			return this._returnPromiseWithError(JSON.stringify(errorObject));
 		}
 	}
 
 	_checkErrorResponse(expectedStatusCode, actualStatusCode, respBody, actualStatusMessage) {
 		if (actualStatusCode !== expectedStatusCode) {
 			let statusMsg = (actualStatusMessage === '' || actualStatusMessage === undefined) ? '' : '(' + actualStatusMessage + ')';
-			throw new Error('Resp StatusCode ' + actualStatusCode + statusMsg + ':\nerrorBody:' + JSON.stringify(respBody));
+			let errorObject = { statusCode: `${actualStatusCode}${statusMsg}`, errorBody: respBody };
+			// let errorMessage = '{ "statusCode": "' + actualStatusCode + statusMsg + '", "errorBody":' + JSON.stringify(respBody) + ' }';
+			throw new Error(JSON.stringify(errorObject));
+		}
+	}
+
+	_tryParseJSON(stringToParse) {
+		try {
+			return JSON.parse(stringToParse);
+		} catch (e) {
+			return stringToParse;
 		}
 	}
 
@@ -57,7 +70,11 @@ class Events {
 				return { eventId: eventId, statusCode: status, statusMessage: resp.statusMessage, message: 'Event deleted successfully' };
 			})
 			.catch(err => {
-				throw new Error('Events.delete ' + err);
+				let error = {
+					origin: 'Events.delete',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -80,7 +97,11 @@ class Events {
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body;
 			}).catch(err => {
-				throw new Error('Events.get ' + err);
+				let error = {
+					origin: 'Events.get',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -108,7 +129,11 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events.insert ' + err);
+				let error = {
+					origin: 'Events.insert',
+					error: this._tryParseJSON(err.message)
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -130,7 +155,11 @@ class Events {
 				return body.items;
 			})
 			.catch(err => {
-				throw new Error('Events.instances ' + err);
+				let error = {
+					origin: 'Events.instances',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -153,7 +182,11 @@ class Events {
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
 				return body.items;
 			}).catch(err => {
-				throw new Error('Events.list ' + err);
+				let error = {
+					origin: 'Events.list',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -180,7 +213,11 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events.move ' + err);
+				let error = {
+					origin: 'Events.move',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -202,7 +239,11 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events.quickAdd ' + err);
+				let error = {
+					origin: 'Events.quickAdd',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -224,7 +265,11 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events.update ' + err);
+				let error = {
+					origin: 'Events.update',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 
@@ -245,7 +290,11 @@ class Events {
 				return body;
 			})
 			.catch(err => {
-				throw new Error('Events.watch ' + err);
+				let error = {
+					origin: 'Events.watch',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
 			});
 	}
 }
