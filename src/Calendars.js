@@ -18,7 +18,7 @@ class Calendars {
 	}
 
 	clear(calendarId) {
-		return this._httpRequest.post('', `${this._calBaseUrl}${calendarId}/clear`, '', this._JWT)
+		return this._httpRequest.post(`${this._calBaseUrl}${calendarId}/clear`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				return { calendarId: calendarId, statusCode: resp.statusCode, message: 'Calendar cleared successfully' };
@@ -29,7 +29,7 @@ class Calendars {
 	}
 
 	get(calendarId) {
-		return this._httpRequest.get('', `${this._calBaseUrl}${calendarId}`, '', this._JWT)
+		return this._httpRequest.get(`${this._calBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -41,7 +41,7 @@ class Calendars {
 	}
 
 	insert(params) {
-		return this._httpRequest.post('', `${this._calBaseUrl}`, params, this._JWT)
+		return this._httpRequest.post(`${this._calBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -53,7 +53,7 @@ class Calendars {
 	}
 
 	update(calendarId, params) {
-		return this._httpRequest.put('', `${this._calBaseUrl}${calendarId}`, params, this._JWT)
+		return this._httpRequest.put(`${this._calBaseUrl}${calendarId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -65,7 +65,7 @@ class Calendars {
 	}
 
 	delete(calendarId) {
-		return this._httpRequest.delete('', `${this._calBaseUrl}${calendarId}`, '', this._JWT)
+		return this._httpRequest.delete(`${this._calBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				return { calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Calendar deleted successfully' };

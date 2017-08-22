@@ -18,7 +18,7 @@ class CalendarList {
 	}
 
 	list(params) {
-		return this._httpRequest.get('', `${this._calListBaseUrl}`, params, this._JWT)
+		return this._httpRequest.get(`${this._calListBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -30,7 +30,7 @@ class CalendarList {
 	}
 
 	get(calendarId) {
-		return this._httpRequest.get('', `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
+		return this._httpRequest.get(`${this._calListBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -43,7 +43,7 @@ class CalendarList {
 
 	insert(calendarId, params) {
 		params.id = calendarId;
-		return this._httpRequest.post('', `${this._calListBaseUrl}`, params, this._JWT)
+		return this._httpRequest.post(`${this._calListBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -55,7 +55,7 @@ class CalendarList {
 	}
 
 	update(calendarId, params) {
-		return this._httpRequest.put('', `${this._calListBaseUrl}${calendarId}`, params, this._JWT)
+		return this._httpRequest.put(`${this._calListBaseUrl}${calendarId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -67,7 +67,7 @@ class CalendarList {
 	}
 
 	delete(calendarId) {
-		return this._httpRequest.delete('', `${this._calListBaseUrl}${calendarId}`, '', this._JWT)
+		return this._httpRequest.delete(`${this._calListBaseUrl}${calendarId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				return { calendarId: calendarId, statusCode: resp.statusCode, statusMessage: resp.statusMessage, message: 'Calendar entry deleted successfully from CalendarList' };
@@ -78,7 +78,7 @@ class CalendarList {
 	}
 
 	watch(params) {
-		return this._httpRequest.post('', `${this._calListBaseUrl}/watch`, '', this._JWT)
+		return this._httpRequest.post(`${this._calListBaseUrl}/watch`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;

@@ -3,11 +3,7 @@ let chai = require('chai');
 let expect = chai.expect;
 
 describe('FreeBusy.js', function () {
-	let freebusy;
-
-	before(() => {
-		freebusy = require('../src/FreeBusy');
-	});
+	let freebusy = require('../src/FreeBusy');
 
 	it('Should return error if missing arguments when calling constructor', () => {
 		try {

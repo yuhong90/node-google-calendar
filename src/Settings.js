@@ -18,7 +18,7 @@ class Settings {
 	}
 
 	get(settingId) {
-		return this._httpRequest.get('', `${this._settingBaseUrl}${settingId}`, '', this._JWT)
+		return this._httpRequest.get(`${this._settingBaseUrl}${settingId}`, '', this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -30,7 +30,7 @@ class Settings {
 	}
 
 	list(params) {
-		return this._httpRequest.get('', `${this._settingBaseUrl}`, params, this._JWT)
+		return this._httpRequest.get(`${this._settingBaseUrl}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -42,7 +42,7 @@ class Settings {
 	}
 
 	watch(params) {
-		return this._httpRequest.post('', `${this._settingBaseUrl}/watch`, params, this._JWT)
+		return this._httpRequest.post(`${this._settingBaseUrl}/watch`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;

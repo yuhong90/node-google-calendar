@@ -2,7 +2,6 @@ let sinon = require('sinon');
 let chai = require('chai');
 let expect = chai.expect;
 
-
 describe('Events.js', function () {
 	let events;
 	let mockEvent = {

@@ -47,7 +47,7 @@ class FreeBusy {
 			params.timeZone = this._timezone;
 		}
 
-		return this._httpRequest.post(calendarId, this._BaseUrl, params, this._JWT)
+		return this._httpRequest.post(this._BaseUrl, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				return resp.body.calendars[calendarId].busy;

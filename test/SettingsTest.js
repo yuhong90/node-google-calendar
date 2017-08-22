@@ -3,11 +3,7 @@ let chai = require('chai');
 let expect = chai.expect;
 
 describe('Settings.js', function () {
-	let settings;
-
-	before(() => {
-		settings = require('../src/Settings');
-	});
+	let settings = require('../src/Settings');
 
 	it('Should return error if missing arguments when calling constructor', () => {
 		try {
