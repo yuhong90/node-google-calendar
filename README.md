@@ -3,7 +3,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/yuhong90/node-google-calendar/badge.svg)](https://snyk.io/test/github/yuhong90/node-google-calendar)
 
 
-Simple node module that supports Google Calendar Events API
+Simple node module that supports Google Calendar API
 
 This module does server to server authentication with Google APIs without any users being involved. 
 When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application.    
@@ -150,3 +150,5 @@ cal.Settings.list(params)
 ```
 
 More code examples of the various APIs [here](https://github.com/yuhong90/node-google-calendar/tree/master/example).
+
+You can try out the different code examples provided by running eg. `node calendarsExamples.js`.
