@@ -21,45 +21,78 @@ Check out [preparations needed](https://github.com/yuhong90/node-google-calendar
 
 Your config file should look something like this:
 ```javascript
-const SERVICE_ACCT_ID = '<your service account id>';
 const KEYFILE = '<yourpem.pem>';
-const TIMEZONE = 'UTC+08:00';
+const SERVICE_ACCT_ID = '<service_account>@<project_name>.iam.gserviceaccount.com';
 const CALENDAR_ID = {
-  'primary': '',
+  'primary': '<main-calendar-id>@gmail.com',
   'calendar-1': 'calendar1@group.calendar.google.com',
   'calendar-2': 'calendar2@group.calendar.google.com'
 };
+const TIMEZONE = 'UTC+08:00';
 
+module.exports.keyFile = KEYFILE;           //or if using json keys - module.exports.key = key; 
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
-module.exports.keyFile = KEYFILE;           	//or if using json keys -> module.exports.key = key; 
-module.exports.timezone = TIMEZONE;
 module.exports.calendarId = CALENDAR_ID;
+module.exports.timezone = TIMEZONE;
 ```
 
-To use, require this module in your project and pass in the configurations file.
-
+To use, require this module in your application and pass in the necessary config file.
 ```javascript
   const CONFIG = require('./config/Settings');
   const CalendarAPI = require('node-google-calendar');
   let cal = new CalendarAPI(CONFIG);  
 ```
-
-You should now be able to query your specified calendar and try out the following examples.   
+You should now be able to query your specified calendar and try out the following examples.
 
 
 ## APIs
-Most of the [Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/v3/reference/events) are supported, which includes APIs in resource types of 
-[Calendars](https://developers.google.com/google-apps/calendar/v3/reference/calendars),
+Most [Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/concepts/) are now supported! This includes APIs in resource types of [Calendars](https://developers.google.com/google-apps/calendar/v3/reference/calendars),
 [CalendarList](https://developers.google.com/google-apps/calendar/v3/reference/calendarList),
 [Acl](https://developers.google.com/google-apps/calendar/v3/reference/acl),
 [Events](https://developers.google.com/google-apps/calendar/v3/reference/events), 
 [FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy), 
 [Settings](https://developers.google.com/google-apps/calendar/v3/reference/settings),
 [Colors](https://developers.google.com/google-apps/calendar/v3/reference/colors) &
-[Channels](https://developers.google.com/google-apps/calendar/v3/reference/channels). Some examples are as follows:
+[Channels](https://developers.google.com/google-apps/calendar/v3/reference/channels).
+You can refer to Google's documentation on what parameters to supply, and choose to include or exclude the parameters that you need. 
+  
+Some examples are as follows:
+### [CalendarList](https://github.com/yuhong90/node-google-calendar/blob/master/src/CalendarList.js) Examples 
+CalendarList.list - Returns a promise of a CalendarList of calendar entries and their metadata that the service account has visibility to. 
+```javascript
+let params = {
+  showHidden: true
+};
+
+cal.CalendarList.list(params)
+  .then(resp => {
+	console.log(resp);
+  }).catch(err => {
+	console.log(err.message);
+  });
+```
+
+### [Acl](https://github.com/yuhong90/node-google-calendar/blob/master/src/Acl.js) Examples 
+Acl.insert - Granting a user `owner` permission of to a calendar. Calendar entry should be automatically added to user's CalendarList after success. (Appear on calendarlist on left side of Google Calendar's WebUI)  
+```javascript
+let params = {
+	scope: {
+		type: 'user',
+		value: 'your-user@gmail.com'
+	},
+	role: 'owner'
+};
+
+cal.Acl.insert(calendarId, params)
+  .then(resp => {
+	console.log(resp);
+  }).catch(err => {
+	console.log(err.message);
+  });
+```
 
 ### [Events](https://github.com/yuhong90/node-google-calendar/blob/master/src/Events.js) Examples 
-Events.list - To Get a promise of all single events in calendar within a time period.
+Events.list - To get a promise of all single events in calendar within a time period.
 ```javascript
 let params = {
 	timeMin: '2017-05-20T06:00:00+08:00',
@@ -76,7 +109,7 @@ cal.Events.list(calendarId, params)
 	console.log(json);
   }).catch(err => {
 	//Error
-	console.log('Error: listSingleEvents -' + err);
+	console.log('Error: listSingleEvents -' + err.message);
   });
 ```
 
@@ -98,7 +131,7 @@ cal.Events.insert(calendarId, params)
 	console.log(resp);
   })
   .catch(err => {
-	console.log('Error: insertEvent-' + err);
+	console.log('Error: insertEvent-' + err.message);
   });
 ```
 
@@ -109,10 +142,10 @@ let params = {
 };
   
 cal.Events.delete(calendarId, eventId, params)
-  .then(function(jsonResults) {
-	console.log('delete Event:' + JSON.stringify(jsonResults));
-  }, function(err) {
-        console.log('Error deleteEvent: ' + JSON.stringify(err));
+  .then(results => {
+	console.log('delete Event:' + JSON.stringify(results));
+  }).catch(err => {
+        console.log('Error deleteEvent:' + JSON.stringify(err.message));
   });
 ```
 
@@ -131,7 +164,7 @@ cal.FreeBusy.query(calendarId, params)
         console.log(resp);
   })
   .catch(err => {
-	console.log('Error: checkBusy -' + err);
+	console.log('Error: checkBusy -' + err.message);
   });
 ```
 
@@ -141,14 +174,13 @@ Settings.list - List user settings
 let params = {};
 cal.Settings.list(params)
   .then(resp => {
-  	console.log('List settings with settingID: ' + settingId);
+	console.log('List settings: ');
 	console.log(resp);
   })
   .catch(err => {
-	console.log('Error: getSettings -' + err);
+	console.log('Error: listSettings -' + err.message);
   });
 ```
 
-More code examples of the various APIs [here](https://github.com/yuhong90/node-google-calendar/tree/master/example).
 
-You can try out the different code examples provided by running eg. `node calendarsExamples.js`.
+More code examples of the various APIs [here](https://github.com/yuhong90/node-google-calendar/tree/master/example).
