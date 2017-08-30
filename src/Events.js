@@ -1,3 +1,15 @@
+function toQs(params) {
+	if (!params) {
+		return '';
+	}
+
+	const qs = Object
+		.keys(params)
+		.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+		.join('&');
+	return qs && '?' + qs;
+}
+
 class Events {
 
 	constructor(httpRequest, jwt, gcalBaseUrl) {
@@ -57,13 +69,13 @@ class Events {
 	 * @param {string} eventId 								- EventId specifying event to delete
 	 * @param {bool} params.sendNotifications (optional) 	- Whether to send notifications about the deletion of the event.
 	 */
-	delete(calendarId, eventId, params) {
+	delete(calendarId, eventId, params, query) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.delete');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				let status = resp.statusCode;
@@ -79,19 +91,19 @@ class Events {
 	}
 
 	/** Returns a promise that list all events on calendar during selected period
-	 * 
+	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
-	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
+	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties.
 	 */
-	get(calendarId, eventId, params) {
+	get(calendarId, eventId, params, query) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.get');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -116,13 +128,13 @@ class Events {
 	 * @param {string} params.status (optional) 		- Event status - confirmed, tentative, cancelled; tentative for all queuing
 	 * @param {string} params.colorId (optional) 		- Color of the event
 	 */
-	insert(calendarId, params) {
+	insert(calendarId, params, query) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.insert');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
+		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -138,17 +150,17 @@ class Events {
 	}
 
 	/** Returns instances of the specified recurring event.
-	 *  	 
+	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to delete
 	 */
-	instances(calendarId, eventId, params) {
+	instances(calendarId, eventId, params, query) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.instances');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -164,19 +176,19 @@ class Events {
 	}
 
 	/** Returns a promise that list all events on calendar during selected period
-	 * 
+	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {datetime} params.timeMin (optional) 	- start datetime of event in 2016-04-29T14:00:00+08:00 RFC3339 format
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
-	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties. 
+	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties.
 	 */
-	list(calendarId, params) {
+	list(calendarId, params, query) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.list');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -197,7 +209,7 @@ class Events {
 	 * @param {string} eventId 				- EventId specifying event to move
 	 * @param {string} params.destination 	- Destination CalendarId to move event to
 	 */
-	move(calendarId, eventId, params) {
+	move(calendarId, eventId, params, query) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.move');
 		if (undefined !== checkResult) {
 			return checkResult;
@@ -206,7 +218,7 @@ class Events {
 			return this._returnPromiseWithError('Events.move: Missing destination CalendarId argument');
 		}
 
-		return this._httpRequest.postWithQueryString(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
+		return this._httpRequest.postWithQueryString(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -222,17 +234,17 @@ class Events {
 	}
 
 	/** Creates an event based on a simple text string.
-	 * 
+	 *
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} params.text 					- The text describing the event to be created.
 	 */
-	quickAdd(calendarId, params) {
+	quickAdd(calendarId, params, query) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.quickAdd');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.postWithQueryString(`${this._gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
+		return this._httpRequest.postWithQueryString(`${this._gcalBaseUrl}${calendarId}/events/quickAdd${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -252,13 +264,13 @@ class Events {
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to update
 	 */
-	update(calendarId, eventId, params) {
+	update(calendarId, eventId, params, query) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.update');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.put(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
+		return this._httpRequest.put(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -274,16 +286,16 @@ class Events {
 	}
 
 	/** Watch for changes to Events resources
-	 * 
+	 *
 	 * @param {string} calendarId		- Calendar identifier
 	 */
-	watch(calendarId, params) {
+	watch(calendarId, params, query) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.watch');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT)
+		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events/watch${toQs(query)}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
