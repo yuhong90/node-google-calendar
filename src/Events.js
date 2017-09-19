@@ -69,13 +69,13 @@ class Events {
 	 * @param {string} eventId 								- EventId specifying event to delete
 	 * @param {bool} params.sendNotifications (optional) 	- Whether to send notifications about the deletion of the event.
 	 */
-	delete(calendarId, eventId, params, query) {
+	delete(calendarId, eventId, params) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.delete');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				let status = resp.statusCode;
@@ -97,13 +97,13 @@ class Events {
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties.
 	 */
-	get(calendarId, eventId, params, query) {
+	get(calendarId, eventId, params) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.get');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
