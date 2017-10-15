@@ -103,7 +103,7 @@ class Events {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}}`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
