@@ -14,9 +14,6 @@ module.exports.timezone = TIMEZONE;
 module.exports.calendarId = CALENDAR_ID;
 
 // Example for using json keys
-// var fs = require('fs');
-// const KEYPATH = '../json-googleapi-key';
-// var json = fs.readFileSync(KEYPATH, 'utf8');
-// var key = JSON.parse(json).private_key;
+// var key = require('./googleapi-key.json').private_key;
 // module.exports.key = key;
 
