@@ -26,7 +26,7 @@ class HttpRequest {
 		return requestWithJWT(options);
 	}
 
-	post(url, params, jwt) {
+	post(url, params, jwt, query) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -34,27 +34,28 @@ class HttpRequest {
 			url: url,
 			jwt: jwt,
 			body: params,
+			qs: query,
 			json: true
 		};
 
 		return requestWithJWT(options);
 	}
 
-	postWithQueryString(url, params, jwt) {
+	postWithQueryString(url, querystring, jwt) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
 			method: 'POST',
 			url: url,
 			jwt: jwt,
-			qs: params,
+			qs: querystring,
 			json: true
 		};
 
 		return requestWithJWT(options);
 	}
 
-	put(url, params, jwt) {
+	put(url, params, jwt, query) {
 		this._checkRequired(url, params, jwt);
 
 		let options = {
@@ -62,6 +63,7 @@ class HttpRequest {
 			url: url,
 			jwt: jwt,
 			body: params,
+			qs: query,
 			json: true
 		};
 

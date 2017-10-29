@@ -204,7 +204,7 @@ describe('Events.js', function () {
 		let expectedResult = mockResponse.body;
 
 		let eventsInstance = new events(mockHttpRequest, 'jwt', 'gcalurl');
-		return eventsInstance.quickAdd('calendarid', {})
+		return eventsInstance.quickAdd('calendarid', { text: 'meeting 10am' })
 			.then((results) => {
 				expect(results).to.eql(expectedResult);
 			});

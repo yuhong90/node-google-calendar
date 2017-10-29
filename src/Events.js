@@ -1,15 +1,3 @@
-function toQs(params) {
-	if (!params) {
-		return '';
-	}
-
-	const qs = Object
-		.keys(params)
-		.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-		.join('&');
-	return qs && '?' + qs;
-}
-
 class Events {
 
 	constructor(httpRequest, jwt, gcalBaseUrl) {
@@ -134,7 +122,7 @@ class Events {
 			return checkResult;
 		}
 
-		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -154,13 +142,13 @@ class Events {
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} eventId 						- EventId specifying event to delete
 	 */
-	instances(calendarId, eventId, params, query) {
+	instances(calendarId, eventId, params) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.instances');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events/${eventId}/instances`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -182,13 +170,13 @@ class Events {
 	 * @param {datetime} params.timeMax (optional) 	- end datetime of event in 2016-04-29T18:00:00+08:00 RFC3339 format
 	 * @param {string} params.q (optional) 			- Free text search terms to find events that match these terms in any field, except for extended properties.
 	 */
-	list(calendarId, params, query) {
+	list(calendarId, params) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.list');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
 
-		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.get(`${this._gcalBaseUrl}${calendarId}/events`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -209,7 +197,7 @@ class Events {
 	 * @param {string} eventId 				- EventId specifying event to move
 	 * @param {string} params.destination 	- Destination CalendarId to move event to
 	 */
-	move(calendarId, eventId, params, query) {
+	move(calendarId, eventId, params) {
 		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.move');
 		if (undefined !== checkResult) {
 			return checkResult;
@@ -218,7 +206,7 @@ class Events {
 			return this._returnPromiseWithError('Events.move: Missing destination CalendarId argument');
 		}
 
-		return this._httpRequest.postWithQueryString(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.postWithQueryString(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/move`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -238,13 +226,16 @@ class Events {
 	 * @param {string} calendarId 					- Calendar identifier
 	 * @param {string} params.text 					- The text describing the event to be created.
 	 */
-	quickAdd(calendarId, params, query) {
+	quickAdd(calendarId, params) {
 		let checkResult = this._checkCalendarId(calendarId, 'Events.quickAdd');
 		if (undefined !== checkResult) {
 			return checkResult;
 		}
+		if (undefined === params.text) {
+			return this._returnPromiseWithError('Events.quickAdd: Missing text in required query parameters');
+		}
 
-		return this._httpRequest.postWithQueryString(`${this._gcalBaseUrl}${calendarId}/events/quickAdd${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.postWithQueryString(`${this._gcalBaseUrl}${calendarId}/events/quickAdd`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -270,7 +261,7 @@ class Events {
 			return checkResult;
 		}
 
-		return this._httpRequest.put(`${this._gcalBaseUrl}${calendarId}/events/${eventId}${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.put(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
@@ -295,7 +286,7 @@ class Events {
 			return checkResult;
 		}
 
-		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events/watch${toQs(query)}`, params, this._JWT)
+		return this._httpRequest.post(`${this._gcalBaseUrl}${calendarId}/events/watch`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
