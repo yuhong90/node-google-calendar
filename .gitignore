@@ -2,7 +2,7 @@
 *.p12
 *.log
 *.snyk
-.npmignore
 config
 node_modules
 keys
+ft

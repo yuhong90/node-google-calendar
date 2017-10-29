@@ -5,10 +5,12 @@
 *.MD
 *.yml
 *.snyk
+*.gitignore
 node_modules
 example
 config
 test
 keys
 json-googleapi-key
+
 
