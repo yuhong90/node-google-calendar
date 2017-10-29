@@ -43,7 +43,10 @@ function grantUserOwnerPermissionToCalendar(calendarId, userId) {
 		},
 		role: 'owner'
 	};
-	return cal.Acl.insert(calendarId, params)
+	let optionalQueryParams = {
+		sendNotifications: true
+	};
+	return cal.Acl.insert(calendarId, params, query)
 		.then(resp => {
 			console.log(resp);
 			return resp;
@@ -70,7 +73,10 @@ function updateUserPermissionToCalendarToReadOnly(calendarId, ruleId, userId) {
 		},
 		role: 'reader'
 	};
-	return cal.Acl.update(calendarId, ruleId, params)
+	let optionalQueryParams = {
+		sendNotifications: true
+	};
+	return cal.Acl.update(calendarId, ruleId, params, query)
 		.then(resp => {
 			console.log(resp);
 			return resp;

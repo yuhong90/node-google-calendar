@@ -26,8 +26,8 @@ class Acl {
 		}
 	}
 
-	list(calendarId, params) {
-		return this._httpRequest.get(`${this._aclBaseUrl}${calendarId}/acl`, params, this._JWT)
+	list(calendarId, query) {
+		return this._httpRequest.get(`${this._aclBaseUrl}${calendarId}/acl`, query, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -58,8 +58,8 @@ class Acl {
 			});
 	}
 
-	insert(calendarId, params) {
-		return this._httpRequest.post(`${this._aclBaseUrl}${calendarId}/acl`, params, this._JWT)
+	insert(calendarId, params, query) {
+		return this._httpRequest.post(`${this._aclBaseUrl}${calendarId}/acl`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -74,8 +74,8 @@ class Acl {
 			});
 	}
 
-	update(calendarId, ruleId, params) {
-		return this._httpRequest.put(`${this._aclBaseUrl}${calendarId}/acl/${ruleId}`, params, this._JWT)
+	update(calendarId, ruleId, params, query) {
+		return this._httpRequest.put(`${this._aclBaseUrl}${calendarId}/acl/${ruleId}`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
@@ -105,8 +105,8 @@ class Acl {
 			});
 	}
 
-	watch(calendarId, params) {
-		return this._httpRequest.post(`${this._aclBaseUrl}${calendarId}/acl/watch`, params, this._JWT)
+	watch(calendarId, params, query) {
+		return this._httpRequest.post(`${this._aclBaseUrl}${calendarId}/acl/watch`, params, this._JWT, query)
 			.then(resp => {
 				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
 				let body = (typeof resp.body === 'string') ? JSON.parse(resp.body) : resp.body;
