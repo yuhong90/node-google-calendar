@@ -63,7 +63,7 @@ class Events {
 			return checkResult;
 		}
 
-		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}}`, params, this._JWT)
+		return this._httpRequest.delete(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				let status = resp.statusCode;

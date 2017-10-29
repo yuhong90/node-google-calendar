@@ -3,6 +3,14 @@ const requestWithJWT = Promise.promisify(require('google-oauth-jwt').requestWith
 
 class HttpRequest {
 
+	_checkBasicRequired(url, jwt) {
+		if (url === undefined) {
+			throw new Error('Missing argument; requst url needed');
+		} else if (jwt === undefined) {
+			throw new Error('Missing argument; jwt needed');
+		}
+	}
+
 	_checkRequired(url, params, jwt) {
 		if (url === undefined) {
 			throw new Error('Missing argument; requst url needed');
@@ -71,7 +79,7 @@ class HttpRequest {
 	}
 
 	delete(url, params, jwt) {
-		this._checkRequired(url, params, jwt);
+		this._checkBasicRequired(url, jwt);
 
 		let options = {
 			method: 'DELETE',
