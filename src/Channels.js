@@ -27,7 +27,7 @@ class Channels {
 	}
 
 	stop(params) {
-		return this._httpRequest.post(`${this._channelBaseUrl}/stop`, params, this._JWT)
+		return this._httpRequest.post(`${this._channelsBaseUrl}/stop`, params, this._JWT)
 			.then(resp => {
 				this._checkErrorResponse(204, resp.statusCode, resp.body, resp.statusMessage);
 				return {
