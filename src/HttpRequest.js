@@ -50,7 +50,7 @@ class HttpRequest {
 	}
 
 	postWithQueryString(url, querystring, jwt) {
-		this._checkRequired(url, params, jwt);
+		this._checkRequired(url, querystring, jwt);
 
 		let options = {
 			method: 'POST',
