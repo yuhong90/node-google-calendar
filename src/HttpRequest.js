@@ -77,6 +77,21 @@ class HttpRequest {
 
 		return requestWithJWT(options);
 	}
+	
+	patch(url, params, jwt, query) {
+		this._checkRequired(url, params, jwt);
+
+		let options = {
+			method: 'PATCH',
+			url: url,
+			jwt: jwt,
+			body: params,
+			qs: query,
+			json: true
+		};
+
+		return requestWithJWT(options);
+	}
 
 	delete(url, params, jwt) {
 		this._checkBasicRequired(url, jwt);

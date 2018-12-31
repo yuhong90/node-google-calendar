@@ -250,6 +250,34 @@ class Events {
 			});
 	}
 
+	
+	
+	/** Patches an event on the calendar specified. Returns promise of details of patched event
+	 *
+	 * @param {string} calendarId 					- Calendar identifier
+	 * @param {string} eventId 						- EventId specifying event to update
+	 */
+	patch(calendarId, eventId, params, query) {
+		let checkResult = this._checkCalendarAndEventId(calendarId, eventId, 'Events.patch');
+		if (undefined !== checkResult) {
+			return checkResult;
+		}
+		
+		return this._httpRequest.patch(`${this._gcalBaseUrl}${calendarId}/events/${eventId}`, params, this._JWT, query)
+			.then(resp => {
+				this._checkErrorResponse(200, resp.statusCode, resp.body, resp.statusMessage);
+				let body = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
+				return body;
+			})
+			.catch(err => {
+				let error = {
+					origin: 'Events.patch',
+					error: this._tryParseJSON(err.message)		// return as object if JSON, string if not parsable
+				};
+				throw new Error(JSON.stringify(error));
+			});
+	}
+
 	/** Updates an event on the calendar specified. Returns promise of details of updated event
 	 *
 	 * @param {string} calendarId 					- Calendar identifier
