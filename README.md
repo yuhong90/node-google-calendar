@@ -5,12 +5,12 @@
 
 Simple node module that supports Google Calendar API
 
-This module does server to server authentication with Google APIs without any users being involved. 
+This module does server to server authentication with Google APIs without any users being involved.
 When using Google APIs from the server (or any non-browser based application), authentication is performed through a Service Account, which is a special account representing your application.    
 
 Find out more about [preparations needed](https://github.com/yuhong90/node-google-calendar/wiki#preparations-needed) to setting up the [service account](https://github.com/yuhong90/node-google-calendar/wiki#setup-service-accounts), grant calendar access, [auth key to google](https://github.com/yuhong90/node-google-calendar/wiki#providing-key-or-keyfile-for-google-oauth) and the configurations needed to start using node-google-calendar.
-   
-   
+
+
 
 ## Getting Started
 
@@ -30,7 +30,7 @@ const CALENDAR_ID = {
 };
 const TIMEZONE = 'UTC+08:00';
 
-module.exports.keyFile = KEYFILE;           //or if using json keys - module.exports.key = key; 
+module.exports.keyFile = KEYFILE;           //or if using json keys - module.exports.key = key;
 module.exports.serviceAcctId = SERVICE_ACCT_ID;
 module.exports.calendarId = CALENDAR_ID;
 module.exports.timezone = TIMEZONE;
@@ -49,16 +49,16 @@ You should now be able to query your specified calendar and try out the followin
 Most [Google Calendar APIs v3](https://developers.google.com/google-apps/calendar/concepts/) are now supported! This includes APIs in resource types of [Calendars](https://developers.google.com/google-apps/calendar/v3/reference/calendars),
 [CalendarList](https://developers.google.com/google-apps/calendar/v3/reference/calendarList),
 [Acl](https://developers.google.com/google-apps/calendar/v3/reference/acl),
-[Events](https://developers.google.com/google-apps/calendar/v3/reference/events), 
-[FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy), 
+[Events](https://developers.google.com/google-apps/calendar/v3/reference/events),
+[FreeBusy](https://developers.google.com/google-apps/calendar/v3/reference/freebusy),
 [Settings](https://developers.google.com/google-apps/calendar/v3/reference/settings),
 [Colors](https://developers.google.com/google-apps/calendar/v3/reference/colors) &
 [Channels](https://developers.google.com/google-apps/calendar/v3/reference/channels).
-You can refer to Google's documentation on what parameters to supply, and choose to include or exclude the parameters that you need. 
-  
+You can refer to Google's documentation on what parameters to supply, and choose to include or exclude the parameters that you need.
+
 Some examples are as follows:
-### [CalendarList](https://github.com/yuhong90/node-google-calendar/blob/master/src/CalendarList.js) Examples 
-CalendarList.list - Returns a promise of a CalendarList of calendar entries and their metadata that the service account has visibility to. 
+### [CalendarList](https://github.com/yuhong90/node-google-calendar/blob/master/src/CalendarList.js) Examples
+CalendarList.list - Returns a promise of a CalendarList of calendar entries and their metadata that the service account has visibility to.
 ```javascript
 let params = {
   showHidden: true
@@ -72,7 +72,7 @@ cal.CalendarList.list(params)
   });
 ```
 
-### [Acl](https://github.com/yuhong90/node-google-calendar/blob/master/src/Acl.js) Examples 
+### [Acl](https://github.com/yuhong90/node-google-calendar/blob/master/src/Acl.js) Examples
 Acl.insert - Granting a user `owner` permission of to a calendar. Calendar entry should be automatically added to user's CalendarList after success. (Appear on calendarlist on left side of Google Calendar's WebUI)  
 ```javascript
 let params = {
@@ -91,7 +91,7 @@ cal.Acl.insert(calendarId, params)
   });
 ```
 
-### [Events](https://github.com/yuhong90/node-google-calendar/blob/master/src/Events.js) Examples 
+### [Events](https://github.com/yuhong90/node-google-calendar/blob/master/src/Events.js) Examples
 Events.list - To get a promise of all single events in calendar within a time period.
 ```javascript
 let params = {
@@ -135,12 +135,12 @@ cal.Events.insert(calendarId, params)
   });
 ```
 
-Events.delete - Deletes an Event on a specified Calendar with EventId. Returns promise of results. 
+Events.delete - Deletes an Event on a specified Calendar with EventId. Returns promise of results.
 ```javascript
 let params = {
 	sendNotifications: true
 };
-  
+
 cal.Events.delete(calendarId, eventId, params)
   .then(results => {
 	console.log('delete Event:' + JSON.stringify(results));
@@ -149,8 +149,26 @@ cal.Events.delete(calendarId, eventId, params)
   });
 ```
 
-### [FreeBusy](https://github.com/yuhong90/node-google-calendar/blob/master/src/FreeBusy.js) Examples 
-FreeBusy.query - Checks if queried calendar slot is busy during selected period. Returns promise of list of events at specified slot. 
+Events.patch - Specify part of an **existing** event to modify. Returns promise of results.
+Must specify the eventId (the "id" of an event) and any fields you'd like to modify. All other fields remain untouched.
+
+```javascript
+cal.Events.patch(calendarId, eventId, {
+       summary: "updated summary",
+       ...
+       ...
+     })
+     .then(results => {
+       console.log("patched Event:" + JSON.stringify(results));
+     })
+     .catch(err => {
+       console.log("Error patchedEvent:" + JSON.stringify(err.message));
+     });
+   })
+```
+
+### [FreeBusy](https://github.com/yuhong90/node-google-calendar/blob/master/src/FreeBusy.js) Examples
+FreeBusy.query - Checks if queried calendar slot is busy during selected period. Returns promise of list of events at specified slot.
 ```javascript
 let params = {
 	"timeMin": '2017-05-20T08:00:00+08:00',
