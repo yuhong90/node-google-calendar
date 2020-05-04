@@ -1,37 +1,41 @@
 {
-	"name": "node-google-calendar",
-	"version": "1.1.1",
-	"description": "Simple node module that supports Google Calendar APIs",
-	"main": "./src/CalendarAPI.js",
-	"scripts": {
-		"test": "mocha",
-		"test watch": "mocha -w"
-	},
-	"dependencies": {
-		"bluebird": "^3.4.1",
-		"google-oauth-jwt": "^0.2.0",
-		"request-promise": "^4.1.0"
-	},
-	"devDependencies": {
-		"chai": "^4.0.2",
-		"mocha": "^3.4.2",
-		"sinon": "^2.3.6"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/yuhong90/node-google-calendar.git"
-	},
-	"keywords": [
-		"node",
-		"google",
-		"calendar",
-		"event",
-		"server-to-server-authentication"
-	],
-	"author": "Shek Yu Hong",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/yuhong90/node-google-calendar/issues"
-	},
-	"homepage": "https://github.com/yuhong90/node-google-calendar#readme"
+  "name": "node-google-calendar",
+  "version": "1.1.1",
+  "description": "Simple node module that supports Google Calendar APIs",
+  "main": "./src/CalendarAPI.js",
+  "scripts": {
+    "test": "mocha",
+    "test watch": "mocha -w",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "google-oauth-jwt": "^0.2.0",
+    "request-promise": "^4.1.0",
+    "snyk": "^1.317.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuhong90/node-google-calendar.git"
+  },
+  "keywords": [
+    "node",
+    "google",
+    "calendar",
+    "event",
+    "server-to-server-authentication"
+  ],
+  "author": "Shek Yu Hong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuhong90/node-google-calendar/issues"
+  },
+  "homepage": "https://github.com/yuhong90/node-google-calendar#readme",
+  "snyk": true
 }
